@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Doce Manhã — Padaria & Confeitaria de Bairro</title>
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.14.1/dist/cdn.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
+<style type="text/tailwindcss">
+@import "tailwindcss";
+
+@theme {
+  --color-milk:    #FFFDF7;
+  --color-vanilla: #FFF3D6;
+  --color-bubble:  #FF8FA3;
+  --color-berry:   #E4436B;
+  --color-mint:    #8FD9C0;
+  --color-sky:     #8EC5FF;
+  --color-sun:     #FFC94A;
+  --color-grape:   #B79CFF;
+  --color-choco:   #4B3A34;
+
+  --font-round: "Baloo 2", system-ui, cursive;
+  --font-body:  Nunito, system-ui, sans-serif;
+
+  --radius-blob: 58% 42% 46% 54% / 45% 52% 48% 55%;
+
+  --shadow-pop:  0 14px 0 -4px rgba(75,58,52,.10);
+  --shadow-pop2: 0 20px 45px -18px rgba(228,67,107,.5);
+}
+
+@layer base {
+  html{scroll-behavior:smooth;scroll-padding-top:6.5rem}
+  body{background:#FFFDF7}
+  /* o v4 removeu o cursor:pointer padrão dos botões */
+  button:not(:disabled),[role="button"]:not(:disabled){cursor:pointer}
+}
+
+@layer components {
+  .float{animation:float 5s ease-in-out infinite}
+  .spin-slow{animation:spin-slow 22s linear infinite}
+  .dots{background-image:radial-gradient(#4B3A3418 1.6px,transparent 1.6px);background-size:22px 22px}
+  .wiggle:hover{animation:wig .5s ease-in-out}
+  .tilt{transform:rotate(var(--r,0deg));transition:transform .3s ease}
+  .tilt:hover{transform:rotate(0deg)}
+}
+
+@keyframes float{0%,100%{transform:translateY(0) rotate(var(--r,0deg))}50%{transform:translateY(-16px) rotate(var(--r,0deg))}}
+@keyframes spin-slow{to{transform:rotate(360deg)}}
+@keyframes wig{0%,100%{transform:rotate(0)}25%{transform:rotate(-4deg)}75%{transform:rotate(4deg)}}
+[x-cloak]{display:none!important}
+</style>
+</head>
+<body x-data class="font-body text-choco antialiased selection:bg-bubble selection:text-white">
+
+<!-- ============ NAV ============ -->
+<div x-data="{open:false, top:true}" x-init="window.addEventListener('scroll',()=>top=window.scrollY<20)">
+  <header class="fixed inset-x-0 top-0 z-50 px-4 pt-4">
+    <div :class="top ? 'bg-milk/70' : 'bg-milk shadow-[0_10px_30px_-16px_rgba(75,58,52,.35)]'"
+         class="mx-auto flex max-w-6xl items-center justify-between rounded-full border-2 border-choco/10 px-5 py-3 backdrop-blur-lg transition-all duration-500">
+      <a href="#" class="flex items-center gap-2.5">
+        <span class="grid h-11 w-11 place-items-center rounded-full bg-bubble text-2xl shadow-[0_5px_0_0_#E4436B]">🥐</span>
+        <span class="font-round text-2xl font-extrabold leading-none">Doce Manhã</span>
+      </a>
+
+      <nav class="hidden items-center gap-1 font-round font-semibold md:flex">
+        <a href="#delicias" class="rounded-full px-4 py-2 transition hover:bg-vanilla">Delícias</a>
+        <a href="#festas" class="rounded-full px-4 py-2 transition hover:bg-vanilla">Festas</a>
+        <a href="#sobre" class="rounded-full px-4 py-2 transition hover:bg-vanilla">Sobre nós</a>
+        <a href="#duvidas" class="rounded-full px-4 py-2 transition hover:bg-vanilla">Dúvidas</a>
+      </nav>
+
+      <div class="flex items-center gap-2">
+        <a href="#festas" class="hidden rounded-full bg-choco px-6 py-3 font-round font-bold text-milk shadow-[0_5px_0_0_rgba(75,58,52,.35)] transition-all hover:-translate-y-0.5 hover:shadow-[0_8px_0_0_rgba(75,58,52,.35)] sm:block">Encomendar</a>
+        <button @click="open=!open" class="grid h-11 w-11 place-items-center rounded-full bg-vanilla md:hidden">
+          <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path stroke-linecap="round" d="M4 7h16M4 12h16M4 17h16"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div x-cloak x-show="open" x-collapse class="mx-auto mt-2 max-w-6xl rounded-3xl border-2 border-choco/10 bg-milk p-3 font-round font-semibold md:hidden">
+      <a @click="open=false" href="#delicias" class="block rounded-2xl px-4 py-3 hover:bg-vanilla">Delícias</a>
+      <a @click="open=false" href="#festas" class="block rounded-2xl px-4 py-3 hover:bg-vanilla">Festas</a>
+      <a @click="open=false" href="#sobre" class="block rounded-2xl px-4 py-3 hover:bg-vanilla">Sobre nós</a>
+      <a @click="open=false" href="#duvidas" class="block rounded-2xl px-4 py-3 hover:bg-vanilla">Dúvidas</a>
+    </div>
+  </header>
+</div>
+
+<!-- ============ HERO ============ -->
+<section class="dots relative overflow-hidden bg-vanilla pb-40 pt-36 lg:pt-44">
+  <div class="pointer-events-none absolute -left-24 top-20 h-72 w-72 rounded-blob bg-bubble/25 blur-2xl"></div>
+  <div class="pointer-events-none absolute -right-20 top-52 h-80 w-80 rounded-blob bg-mint/30 blur-2xl"></div>
+
+  <div class="relative mx-auto grid max-w-6xl items-center gap-14 px-6 lg:grid-cols-2">
+    <div class="text-center lg:text-left">
+      <span class="inline-flex items-center gap-2 rounded-full border-2 border-choco/10 bg-milk px-4 py-2 font-round font-semibold text-berry">
+        <span class="h-2 w-2 animate-pulse rounded-full bg-berry"></span> Fornada quentinha das 6h!
+      </span>
+
+      <h1 class="mt-7 font-round text-6xl font-extrabold leading-[.95] sm:text-7xl lg:text-[5.5rem]">
+        Bom dia<br>com <span class="relative inline-block text-berry">cheirinho
+          <svg class="absolute -bottom-3 left-0 w-full" height="14" viewBox="0 0 200 14" fill="none"><path d="M3 9c40-7 90-8 194-4" stroke="#FFC94A" stroke-width="6" stroke-linecap="round"/></svg>
+        </span><br>de pão!
+      </h1>
+
+      <p class="mx-auto mt-8 max-w-md text-lg leading-relaxed text-choco/70 lg:mx-0">
+        A padaria do bairro que faz bolo de fubá igual ao da sua avó,
+        pão de queijo que estica de verdade e café que já sabe seu nome.
+      </p>
+
+      <div class="mt-10 flex flex-wrap justify-center gap-4 lg:justify-start">
+        <a href="#delicias" class="rounded-full bg-berry px-9 py-4 font-round text-lg font-bold text-white shadow-pop2 transition-transform hover:-translate-y-1">Ver as delícias 🍰</a>
+        <a href="#sobre" class="rounded-full border-[3px] border-choco bg-milk px-9 py-4 font-round text-lg font-bold shadow-pop transition-transform hover:-translate-y-1">Nossa história</a>
+      </div>
+
+      <div class="mt-12 flex items-center justify-center gap-4 lg:justify-start">
+        <div class="flex -space-x-3">
+          <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=200&q=80" class="h-11 w-11 rounded-full border-[3px] border-milk object-cover" alt="">
+          <img src="https://images.unsplash.com/photo-1531123897727-8f129e1688ce?auto=format&fit=crop&w=200&q=80" class="h-11 w-11 rounded-full border-[3px] border-milk object-cover" alt="">
+          <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=200&q=80" class="h-11 w-11 rounded-full border-[3px] border-milk object-cover" alt="">
+          <span class="grid h-11 w-11 place-items-center rounded-full border-[3px] border-milk bg-sun font-round font-bold text-sm">+2k</span>
+        </div>
+        <p class="text-sm leading-tight text-choco/65"><span class="font-round font-bold text-choco">★★★★★ 4,9</span><br>de mais de 2.000 vizinhos</p>
+      </div>
+    </div>
+
+    <div class="relative">
+      <div class="relative mx-auto aspect-square w-full max-w-md overflow-hidden rounded-blob border-4 border-choco/10 shadow-[0_30px_60px_-30px_rgba(75,58,52,.5)]">
+        <img src="https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=1200&q=80" alt="Cesta de pães" class="h-full w-full object-cover">
+      </div>
+
+      <div class="float absolute -left-2 top-6 rounded-3xl border-2 border-choco/10 bg-milk p-4 shadow-pop sm:-left-8" style="--r:-6deg">
+        <p class="font-round text-3xl">🍞</p>
+        <p class="mt-1 font-round font-bold leading-tight">Fornada<br>das 6h</p>
+      </div>
+      <div class="float absolute -right-2 top-40 rounded-3xl border-2 border-choco/10 bg-mint p-4 shadow-pop sm:-right-6" style="--r:5deg;animation-delay:.8s">
+        <p class="font-round font-bold leading-tight">Entrega<br>em 30min 🛵</p>
+      </div>
+      <div class="float absolute -bottom-4 left-8 rounded-3xl border-2 border-choco/10 bg-sun p-4 shadow-pop" style="--r:-3deg;animation-delay:1.6s">
+        <p class="font-round font-bold leading-tight">Bolo do dia<br><span class="text-berry">R$ 8 a fatia</span></p>
+      </div>
+
+      <div class="spin-slow absolute -right-4 bottom-16 hidden h-24 w-24 lg:block">
+        <svg viewBox="0 0 100 100" class="h-full w-full">
+          <defs><path id="c" d="M50,50 m-34,0 a34,34 0 1,1 68,0 a34,34 0 1,1 -68,0"/></defs>
+          <text class="fill-choco font-round" font-size="11.5" letter-spacing="1.6"><textPath href="#c">FEITO HOJE · FEITO À MÃO · FEITO HOJE · </textPath></text>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <svg class="absolute bottom-0 left-0 w-full" viewBox="0 0 1440 120" preserveAspectRatio="none" fill="#FFFDF7"><path d="M0,64 C240,120 480,0 720,40 C960,80 1200,120 1440,60 L1440,120 L0,120 Z"/></svg>
+</section>
+
+<!-- ============ ÍCONES ============ -->
+<section class="mx-auto max-w-6xl px-6 py-20">
+  <div class="grid gap-6 sm:grid-cols-3">
+    <div class="wiggle rounded-[2rem] border-2 border-choco/10 bg-sky/20 p-8 text-center">
+      <div class="mx-auto grid h-16 w-16 place-items-center rounded-2xl bg-sky text-3xl">🌾</div>
+      <h3 class="mt-5 font-round text-2xl font-bold">Ingrediente de verdade</h3>
+      <p class="mt-2 text-choco/65">Manteiga, ovo caipira e farinha boa. Zero pó mágico.</p>
+    </div>
+    <div class="wiggle rounded-[2rem] border-2 border-choco/10 bg-bubble/20 p-8 text-center">
+      <div class="mx-auto grid h-16 w-16 place-items-center rounded-2xl bg-bubble text-3xl">👵</div>
+      <h3 class="mt-5 font-round text-2xl font-bold">Receita de família</h3>
+      <p class="mt-2 text-choco/65">Caderninho da Dona Zizi, escrito à mão em 1972.</p>
+    </div>
+    <div class="wiggle rounded-[2rem] border-2 border-choco/10 bg-grape/20 p-8 text-center">
+      <div class="mx-auto grid h-16 w-16 place-items-center rounded-2xl bg-grape text-3xl">🛵</div>
+      <h3 class="mt-5 font-round text-2xl font-bold">Chega quentinho</h3>
+      <p class="mt-2 text-choco/65">Entrega em 30 minutos no bairro todo, com bolsa térmica.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ DELÍCIAS ============ -->
+<section id="delicias" class="mx-auto max-w-6xl px-6 pb-24"
+         x-data="{ aba:'Todos', itens:[
+    {n:'Bolo de Fubá Cremoso', c:'Bolos',   p:'8',  u:'a fatia', tag:'Mais amado', cor:'bg-sun',    e:'🍰', img:'https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=800&q=80'},
+    {n:'Pão de Queijo Mineiro',c:'Salgados',p:'3',  u:'a unidade',tag:'Sai quentinho', cor:'bg-mint',  e:'🧀', img:'https://images.unsplash.com/photo-1586444248902-2f64eddc13df?auto=format&fit=crop&w=800&q=80'},
+    {n:'Sonho de Creme',       c:'Doces',   p:'12', u:'a unidade',tag:'Recheio generoso', cor:'bg-bubble',e:'🍩', img:'https://images.unsplash.com/photo-1551024506-0bccd828d307?auto=format&fit=crop&w=800&q=80'},
+    {n:'Pão Francês',          c:'Pães',    p:'1,20',u:'a unidade',tag:'De hora em hora', cor:'bg-sky',  e:'🥖', img:'https://images.unsplash.com/photo-1549931319-a545dcf3bc73?auto=format&fit=crop&w=800&q=80'},
+    {n:'Croissant de Manteiga',c:'Pães',    p:'11', u:'a unidade',tag:'Folhadinho', cor:'bg-grape', e:'🥐', img:'https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=800&q=80'},
+    {n:'Torta de Frango',      c:'Salgados',p:'16', u:'a fatia', tag:'Do almoço',  cor:'bg-sun',   e:'🥧', img:'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=800&q=80'},
+    {n:'Brownie de Nutella',   c:'Doces',   p:'14', u:'a unidade',tag:'Novidade',  cor:'bg-bubble',e:'🍫', img:'https://images.unsplash.com/photo-1607920591413-4ec007e70023?auto=format&fit=crop&w=800&q=80'},
+    {n:'Bolo de Cenoura',      c:'Bolos',   p:'9',  u:'a fatia', tag:'Cobertura extra', cor:'bg-mint', e:'🥕', img:'https://images.unsplash.com/photo-1621303837174-89787a7d4729?auto=format&fit=crop&w=800&q=80'}
+  ], get lista(){ return this.aba==='Todos' ? this.itens : this.itens.filter(i=>i.c===this.aba) } }">
+
+  <div class="text-center">
+    <span class="font-round font-bold text-berry">🧁 Cardápio</span>
+    <h2 class="mt-3 font-round text-5xl font-extrabold leading-[1.05] sm:text-6xl">O que tem hoje?</h2>
+    <p class="mx-auto mt-4 max-w-md text-lg text-choco/65">Tudo feito na cozinha aqui do lado, todo santo dia de madrugada.</p>
+  </div>
+
+  <div class="mt-10 flex flex-wrap justify-center gap-3">
+    <template x-for="a in ['Todos','Pães','Bolos','Doces','Salgados']" :key="a">
+      <button @click="aba=a" :class="aba===a ? 'bg-choco text-milk shadow-[0_5px_0_0_rgba(75,58,52,.35)]' : 'bg-milk border-2 border-choco/10 hover:bg-vanilla'"
+              class="rounded-full px-6 py-3 font-round font-bold transition-all" x-text="a"></button>
+    </template>
+  </div>
+
+  <div class="mt-12 grid gap-7 sm:grid-cols-2 lg:grid-cols-4">
+    <template x-for="i in lista" :key="i.n">
+      <article class="group overflow-hidden rounded-[2rem] border-2 border-choco/10 bg-milk transition-transform duration-300 hover:-translate-y-2 hover:shadow-[0_24px_40px_-24px_rgba(75,58,52,.5)]">
+        <div class="relative overflow-hidden">
+          <img :src="i.img" :alt="i.n" class="h-48 w-full object-cover transition-transform duration-700 group-hover:scale-110">
+          <span :class="i.cor" class="absolute left-3 top-3 rounded-full border-2 border-choco/10 px-3 py-1 font-round text-xs font-bold" x-text="i.tag"></span>
+          <span class="absolute -bottom-4 right-3 grid h-12 w-12 place-items-center rounded-full border-2 border-choco/10 bg-milk text-xl" x-text="i.e"></span>
+        </div>
+        <div class="p-5 pt-6">
+          <h3 class="font-round text-xl font-bold leading-tight" x-text="i.n"></h3>
+          <div class="mt-3 flex items-end justify-between">
+            <div>
+              <span class="font-round text-2xl font-extrabold text-berry" x-text="'R$ '+i.p"></span>
+              <span class="ml-1 text-sm text-choco/50" x-text="i.u"></span>
+            </div>
+            <button class="grid h-10 w-10 place-items-center rounded-full bg-vanilla transition hover:bg-sun">
+              <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path stroke-linecap="round" d="M12 5v14M5 12h14"/></svg>
+            </button>
+          </div>
+        </div>
+      </article>
+    </template>
+  </div>
+</section>
+
+<!-- ============ SOBRE ============ -->
+<section id="sobre" class="relative bg-mint/25 py-24">
+  <svg class="absolute -top-1 left-0 w-full" viewBox="0 0 1440 90" preserveAspectRatio="none" fill="#FFFDF7"><path d="M0,50 C360,0 720,90 1080,45 C1260,22 1350,30 1440,45 L1440,0 L0,0 Z"/></svg>
+
+  <div class="mx-auto grid max-w-6xl items-center gap-14 px-6 lg:grid-cols-2">
+    <div class="relative">
+      <img src="https://images.unsplash.com/photo-1464195244916-405fa0a82545?auto=format&fit=crop&w=1200&q=80" alt="Balcão da padaria" class="aspect-[4/3] w-full rounded-[2.5rem] border-4 border-milk object-cover shadow-[0_24px_50px_-25px_rgba(75,58,52,.55)]">
+      <div class="float absolute -bottom-6 -right-3 rounded-3xl border-2 border-choco/10 bg-milk px-6 py-4 shadow-pop" style="--r:4deg">
+        <p class="font-round text-4xl font-extrabold text-berry">52</p>
+        <p class="font-round font-semibold leading-tight">anos no<br>mesmo ponto</p>
+      </div>
+    </div>
+
+    <div>
+      <span class="font-round font-bold text-berry">👋 Prazer, a gente</span>
+      <h2 class="mt-3 font-round text-5xl font-extrabold leading-[1.05] sm:text-6xl">Uma padaria<br>de esquina,<br>do jeitinho antigo</h2>
+      <p class="mt-7 text-lg leading-relaxed text-choco/70">
+        Em 1973, a Dona Zizi vendia bolo de fubá na janela de casa. A fila dobrava a esquina.
+        Um ano depois nascia a Doce Manhã, na mesma calçada onde estamos até hoje.
+      </p>
+      <p class="mt-4 text-lg leading-relaxed text-choco/70">
+        Hoje quem amassa é o neto dela, o Téo. Mudou o padeiro, mudou o forno,
+        mas o caderninho de receitas continua o mesmo — manchado de gordura e tudo.
+      </p>
+
+      <div class="mt-9 grid grid-cols-3 gap-4">
+        <div class="rounded-3xl border-2 border-choco/10 bg-milk p-5 text-center">
+          <p class="font-round text-3xl font-extrabold text-berry">300+</p>
+          <p class="mt-1 text-sm text-choco/60">pães por manhã</p>
+        </div>
+        <div class="rounded-3xl border-2 border-choco/10 bg-milk p-5 text-center">
+          <p class="font-round text-3xl font-extrabold text-berry">14</p>
+          <p class="mt-1 text-sm text-choco/60">pessoas no time</p>
+        </div>
+        <div class="rounded-3xl border-2 border-choco/10 bg-milk p-5 text-center">
+          <p class="font-round text-3xl font-extrabold text-berry">1</p>
+          <p class="mt-1 text-sm text-choco/60">caderninho secreto</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <svg class="absolute -bottom-1 left-0 w-full" viewBox="0 0 1440 90" preserveAspectRatio="none" fill="#FFFDF7"><path d="M0,45 C360,90 720,0 1080,40 C1260,60 1350,55 1440,40 L1440,90 L0,90 Z"/></svg>
+</section>
+
+<!-- ============ FESTAS ============ -->
+<section id="festas" class="mx-auto max-w-6xl px-6 py-24">
+  <div class="overflow-hidden rounded-[3rem] border-2 border-choco/10 bg-linear-to-br from-bubble/25 via-vanilla to-grape/25">
+    <div class="grid items-center gap-10 p-8 sm:p-12 lg:grid-cols-2 lg:p-16">
+      <div>
+        <span class="font-round font-bold text-berry">🎉 Encomendas & festas</span>
+        <h2 class="mt-3 font-round text-5xl font-extrabold leading-[1.05] sm:text-6xl">Sua festa merece<br>bolo de verdade</h2>
+        <p class="mt-6 text-lg leading-relaxed text-choco/70">
+          Bolos decorados, mesa de doces, kit lanche e cento de salgadinho.
+          Encomende com 3 dias de antecedência e a gente cuida do resto.
+        </p>
+
+        <ul class="mt-8 space-y-3">
+          <template x-for="t in ['Bolos decorados a partir de R$ 180','Cento de salgadinho fritos na hora','Mesa de doces montada por nós','Kit festa infantil completo']" :key="t">
+            <li class="flex items-center gap-3">
+              <span class="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-mint">
+                <svg class="h-4 w-4 text-choco" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+              </span>
+              <span x-text="t"></span>
+            </li>
+          </template>
+        </ul>
+      </div>
+
+      <form x-data="{ok:false}" @submit.prevent="ok=true" class="rounded-[2rem] border-2 border-choco/10 bg-milk p-7 shadow-pop sm:p-8">
+        <template x-if="!ok">
+          <div class="space-y-4">
+            <h3 class="font-round text-2xl font-extrabold">Pedir orçamento</h3>
+            <div>
+              <label class="font-round font-semibold text-sm">Seu nome</label>
+              <input required type="text" placeholder="Como te chamamos?" class="mt-1.5 w-full rounded-2xl border-2 border-choco/10 bg-vanilla/50 px-4 py-3 outline-none transition focus:border-bubble">
+            </div>
+            <div class="grid gap-4 sm:grid-cols-2">
+              <div>
+                <label class="font-round font-semibold text-sm">WhatsApp</label>
+                <input required type="tel" placeholder="(11) 90000-0000" class="mt-1.5 w-full rounded-2xl border-2 border-choco/10 bg-vanilla/50 px-4 py-3 outline-none transition focus:border-bubble">
+              </div>
+              <div>
+                <label class="font-round font-semibold text-sm">Data da festa</label>
+                <input required type="date" class="mt-1.5 w-full rounded-2xl border-2 border-choco/10 bg-vanilla/50 px-4 py-3 outline-none transition focus:border-bubble">
+              </div>
+            </div>
+            <div>
+              <label class="font-round font-semibold text-sm">O que você quer?</label>
+              <textarea rows="3" placeholder="Bolo de 2kg de chocolate, 100 coxinhas..." class="mt-1.5 w-full resize-none rounded-2xl border-2 border-choco/10 bg-vanilla/50 px-4 py-3 outline-none transition focus:border-bubble"></textarea>
+            </div>
+            <button class="w-full rounded-2xl bg-berry py-4 font-round text-lg font-bold text-white shadow-pop2 transition-transform hover:-translate-y-1">Pedir orçamento 🎂</button>
+            <p class="text-center text-sm text-choco/50">Respondemos no mesmo dia, prometido!</p>
+          </div>
+        </template>
+        <template x-if="ok">
+          <div class="py-14 text-center">
+            <p class="text-6xl">🎉</p>
+            <h3 class="mt-5 font-round text-3xl font-extrabold">Recebemos!</h3>
+            <p class="mt-3 text-choco/65">A gente te chama no WhatsApp ainda hoje<br>com o orçamento certinho.</p>
+          </div>
+        </template>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- ============ DEPOIMENTOS ============ -->
+<section class="mx-auto max-w-6xl px-6 pb-24">
+  <h2 class="text-center font-round text-5xl font-extrabold sm:text-6xl">Falam da gente 💬</h2>
+  <div class="mt-12 grid gap-6 md:grid-cols-3">
+    <template x-for="d in [
+      {t:'Meu filho de 3 anos aponta pra padaria toda vez que passamos de carro. Já virou passeio de família.', n:'Ana Beatriz', s:'mora na rua de trás', c:'bg-sun/30', r:'-1.5deg'},
+      {t:'Pedi um bolo de aniversário na quinta pra sábado. Chegou lindo, e ainda mandaram brigadeiro de brinde.', n:'Rodrigo Sanches', s:'cliente das festas', c:'bg-mint/30', r:'1.5deg'},
+      {t:'O pão de queijo estica igual dos mineiros de verdade. Sou de BH e aprovo, o que já é dizer muito.', n:'Juliana Prado', s:'mineira exigente', c:'bg-grape/30', r:'-1deg'}
+    ]" :key="d.n">
+      <div :class="d.c" :style="'--r:'+d.r" class="tilt rounded-[2rem] border-2 border-choco/10 p-7">
+        <div class="text-xl">⭐⭐⭐⭐⭐</div>
+        <p class="mt-4 text-lg leading-relaxed" x-text="'“'+d.t+'”'"></p>
+        <div class="mt-6 flex items-center gap-3">
+          <span class="grid h-11 w-11 place-items-center rounded-full bg-milk font-round font-extrabold" x-text="d.n[0]"></span>
+          <div>
+            <p class="font-round font-bold leading-tight" x-text="d.n"></p>
+            <p class="text-sm text-choco/55" x-text="d.s"></p>
+          </div>
+        </div>
+      </div>
+    </template>
+  </div>
+</section>
+
+<!-- ============ DÚVIDAS ============ -->
+<section id="duvidas" class="mx-auto max-w-3xl px-6 pb-24" x-data="{ q:0 }">
+  <h2 class="text-center font-round text-5xl font-extrabold sm:text-6xl">Perguntinhas 🤔</h2>
+  <div class="mt-10 space-y-3">
+    <template x-for="(f,i) in [
+      {p:'Que horas sai o pão quentinho?', r:'Temos fornada às 6h, 10h, 15h e 18h. A das 6h é a maior — e a que some mais rápido, então corre!'},
+      {p:'Vocês entregam?', r:'Entregamos em toda a região do bairro em até 30 minutos, pelo WhatsApp ou pelos aplicativos. Acima de R$ 40 a entrega é por nossa conta.'},
+      {p:'Tem opção sem lactose ou sem glúten?', r:'Temos bolo de cenoura sem lactose todos os dias e dois pães sem glúten às terças, quintas e sábados. É só perguntar no balcão.'},
+      {p:'Com quanta antecedência peço um bolo?', r:'Bolos simples: 2 dias. Bolos decorados e mesa de doces: 3 a 5 dias, dependendo do tamanho. Em datas festivas, quanto antes melhor.'},
+      {p:'Aceitam vale-refeição?', r:'Aceitamos Alelo, Sodexo, VR e Ticket, além de Pix e todos os cartões. No delivery, só Pix e cartão.'}
+    ]" :key="i">
+      <div class="overflow-hidden rounded-[1.75rem] border-2 border-choco/10 bg-milk">
+        <button @click="q = q===i ? null : i" class="flex w-full items-center justify-between gap-4 p-6 text-left">
+          <span class="font-round text-lg font-bold" x-text="f.p"></span>
+          <span :class="q===i ? 'bg-berry text-white rotate-180' : 'bg-vanilla'" class="grid h-9 w-9 shrink-0 place-items-center rounded-full transition-all duration-300">
+            <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" d="M6 9l6 6 6-6"/></svg>
+          </span>
+        </button>
+        <div x-show="q===i" x-collapse><p class="px-6 pb-6 leading-relaxed text-choco/70" x-text="f.r"></p></div>
+      </div>
+    </template>
+  </div>
+</section>
+
+<!-- ============ INSTAGRAM ============ -->
+<section class="mx-auto max-w-6xl px-6 pb-24 text-center">
+  <h2 class="font-round text-5xl font-extrabold sm:text-6xl">Vem ver no @docemanha 📸</h2>
+  <p class="mt-3 text-choco/65">Toda fornada vira story. Segue a gente!</p>
+  <div class="mt-9 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
+    <template x-for="u in [
+      'https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=500&q=80',
+      'https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=500&q=80',
+      'https://images.unsplash.com/photo-1549931319-a545dcf3bc73?auto=format&fit=crop&w=500&q=80',
+      'https://images.unsplash.com/photo-1600271886742-f049cd451bba?auto=format&fit=crop&w=500&q=80',
+      'https://images.unsplash.com/photo-1586444248902-2f64eddc13df?auto=format&fit=crop&w=500&q=80',
+      'https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=500&q=80'
+    ]" :key="u">
+      <a href="#" class="group relative block aspect-square overflow-hidden rounded-3xl border-2 border-choco/10">
+        <img :src="u" alt="" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110">
+        <span class="absolute inset-0 grid place-items-center bg-berry/60 text-2xl opacity-0 transition-opacity group-hover:opacity-100">❤️</span>
+      </a>
+    </template>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer class="relative bg-choco pt-24 text-milk">
+  <svg class="absolute -top-1 left-0 w-full" viewBox="0 0 1440 90" preserveAspectRatio="none" fill="#FFFDF7"><path d="M0,45 C360,90 720,0 1080,40 C1260,60 1350,55 1440,40 L1440,0 L0,0 Z"/></svg>
+
+  <div class="mx-auto max-w-6xl px-6 pb-12">
+    <div class="grid gap-10 md:grid-cols-4">
+      <div class="md:col-span-2">
+        <div class="flex items-center gap-3">
+          <span class="grid h-12 w-12 place-items-center rounded-full bg-bubble text-2xl">🥐</span>
+          <span class="font-round text-3xl font-extrabold">Doce Manhã</span>
+        </div>
+        <p class="mt-5 max-w-sm leading-relaxed text-milk/60">
+          Padaria e confeitaria de bairro desde 1974. A mesma esquina, o mesmo caderninho,
+          o mesmo cheirinho de bolo às seis da manhã.
+        </p>
+        <div class="mt-6 flex gap-3">
+          <a href="#" class="grid h-11 w-11 place-items-center rounded-full bg-milk/10 text-lg transition hover:bg-bubble">📷</a>
+          <a href="#" class="grid h-11 w-11 place-items-center rounded-full bg-milk/10 text-lg transition hover:bg-mint">💬</a>
+          <a href="#" class="grid h-11 w-11 place-items-center rounded-full bg-milk/10 text-lg transition hover:bg-sun">📘</a>
+        </div>
+      </div>
+
+      <div>
+        <p class="mb-4 font-round text-lg font-bold">Horários</p>
+        <ul class="space-y-2 text-milk/60">
+          <li>Seg a sex · 06h — 20h</li>
+          <li>Sábado · 06h — 18h</li>
+          <li>Domingo · 07h — 14h</li>
+          <li class="text-sun">Feriados · 07h — 13h</li>
+        </ul>
+      </div>
+      <div>
+        <p class="mb-4 font-round text-lg font-bold">Onde estamos</p>
+        <ul class="space-y-2 text-milk/60">
+          <li>Rua das Acácias, 187</li>
+          <li>Jardim Primavera</li>
+          <li>(11) 2871-4400</li>
+          <li>oi@docemanha.com.br</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="mt-14 flex flex-col items-center justify-between gap-3 border-t border-milk/12 pt-7 text-sm text-milk/45 sm:flex-row">
+      <p>© 2026 Doce Manhã · Feito com muito carinho (e manteiga)</p>
+      <p>Fornada das 6h saindo agora 🍞</p>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

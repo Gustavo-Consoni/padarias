@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MASSA NOSTRA — Forno · Bar · Panificação</title>
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
+<style type="text/tailwindcss">
+@import "tailwindcss";
+
+@theme {
+  --color-paper:  #F2F0EC;
+  --color-black:  #0B0B0B;
+  --color-tomato: #E63329;
+  --color-bone:   #DEDAD2;
+  --color-gray1:  #6E6A64;
+
+  --font-anton:   Anton, Impact, sans-serif;
+  --font-archivo: Archivo, Helvetica, sans-serif;
+  --font-mono:    "JetBrains Mono", monospace;
+}
+
+@layer base {
+  html{scroll-behavior:smooth;scroll-padding-top:5.5rem}
+  body{background:#F2F0EC}
+  /* o v4 removeu o cursor:pointer padrão dos botões */
+  button:not(:disabled),[role="button"]:not(:disabled){cursor:pointer}
+}
+
+@layer components {
+  .anton{font-family:Anton,Impact,sans-serif;letter-spacing:-.015em;line-height:.95}
+  .grid-bg{background-image:linear-gradient(90deg,rgba(11,11,11,.08) 1px,transparent 1px);background-size:calc(100%/6) 100%}
+  .mono{font-family:'JetBrains Mono',monospace}
+  .outline-txt{-webkit-text-stroke:1.5px #0B0B0B;color:transparent}
+  .lnk{background-image:linear-gradient(#E63329,#E63329);background-size:0% 2px;background-position:0 100%;background-repeat:no-repeat;transition:background-size .4s cubic-bezier(.2,.8,.3,1)}
+  .lnk:hover{background-size:100% 2px}
+}
+
+@keyframes mn{to{transform:translateX(-50%)}}
+[x-cloak]{display:none!important}
+</style>
+</head>
+<body x-data class="font-archivo text-black antialiased selection:bg-tomato selection:text-paper">
+
+<!-- ======== FIXED GRID OVERLAY ======== -->
+<div class="grid-bg pointer-events-none fixed inset-0 z-0 hidden lg:block"></div>
+
+<!-- ======== HEADER ======== -->
+<div x-data="{ menu:false }" class="relative z-50">
+  <header class="fixed inset-x-0 top-0 border-b border-black/12 bg-paper/85 backdrop-blur-md">
+    <div class="flex items-stretch justify-between">
+      <a href="#" class="flex items-center gap-3 border-r border-black/12 px-6 py-4">
+        <span class="grid h-9 w-9 place-items-center bg-tomato anton text-lg text-paper">M</span>
+        <span class="anton text-2xl">MASSA NOSTRA</span>
+      </a>
+
+      <div class="mono hidden flex-1 items-center justify-center gap-8 px-6 text-[11px] uppercase tracking-widest text-gray1 xl:flex">
+        <span>Est. 2016</span><span class="text-tomato">●</span>
+        <span>São Paulo, BR</span><span class="text-tomato">●</span>
+        <span x-data="{h:'--:--'}" x-init="const t=()=>h=new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}); t(); setInterval(t,1000)" x-text="h"></span>
+      </div>
+
+      <nav class="mono hidden items-center gap-7 border-l border-black/12 px-7 text-[12px] uppercase tracking-widest lg:flex">
+        <a href="#cardapio" class="lnk">Cardápio</a>
+        <a href="#casa" class="lnk">A casa</a>
+        <a href="#panificacao" class="lnk">O método</a>
+        <a href="#lugar" class="lnk">Onde estamos</a>
+      </nav>
+
+      <button @click="menu=true" class="mono flex items-center gap-3 border-l border-black/12 bg-black px-7 text-[12px] uppercase tracking-widest text-paper transition-colors hover:bg-tomato">
+        <span>Menu</span>
+        <span class="flex flex-col gap-1"><span class="block h-px w-5 bg-current"></span><span class="block h-px w-5 bg-current"></span></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- fullscreen overlay -->
+  <div x-cloak x-show="menu"
+       x-transition:enter="transition duration-500" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
+       x-transition:leave="transition duration-300" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
+       class="fixed inset-0 z-[70] bg-black text-paper">
+    <div class="flex h-full flex-col">
+      <div class="flex items-center justify-between border-b border-paper/15 px-6 py-4">
+        <span class="anton text-2xl">MASSA NOSTRA</span>
+        <button @click="menu=false" class="mono flex items-center gap-3 text-[12px] uppercase tracking-widest">
+          Fechar <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.4" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>
+        </button>
+      </div>
+
+      <nav class="flex flex-1 flex-col justify-center">
+        <template x-for="(l,i) in [['Cardápio','#cardapio'],['A casa','#casa'],['O método','#panificacao'],['Onde estamos','#lugar']]" :key="l[0]">
+          <a @click="menu=false" :href="l[1]" class="group flex items-baseline gap-6 border-b border-paper/12 px-6 py-5 transition-colors hover:bg-tomato lg:px-14">
+            <span class="mono text-[11px] text-paper/40" x-text="'0'+(i+1)"></span>
+            <span class="anton text-5xl uppercase transition-transform duration-500 group-hover:translate-x-3 lg:text-8xl" x-text="l[0]"></span>
+          </a>
+        </template>
+      </nav>
+
+      <div class="mono grid gap-4 border-t border-paper/15 px-6 py-6 text-[11px] uppercase tracking-widest text-paper/50 sm:grid-cols-3 lg:px-14">
+        <p>Rua Aspicuelta, 388 — Vila Madalena</p>
+        <p>+55 11 3812 0044</p>
+        <p class="sm:text-right">Instagram / Facebook / WhatsApp</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ======== HERO ======== -->
+<section class="relative z-10 border-b border-black/12 pt-[73px]">
+  <div class="border-b border-black/12 px-6 pb-8 pt-14 lg:px-14 lg:pt-20">
+    <div class="mono mb-8 flex flex-wrap gap-x-8 gap-y-2 text-[11px] uppercase tracking-[.2em] text-gray1 lg:mb-16">
+      <span>[01] Forno a lenha</span>
+      <span>[02] Fermentação natural</span>
+      <span>[03] Bar de vinhos</span>
+      <span>[04] Aberto às 06h30</span>
+    </div>
+
+    <h1 class="anton text-[17vw] uppercase leading-[.95] lg:text-[13.5vw]">
+      Pão é<br><span class="outline-txt">política</span><br>de <span class="text-tomato">mesa</span>
+    </h1>
+  </div>
+
+  <div class="grid lg:grid-cols-3">
+    <div class="border-b border-black/12 p-6 lg:border-b-0 lg:border-r lg:p-10">
+      <p class="mono mb-5 text-[11px] uppercase tracking-[.2em] text-tomato">Manifesto</p>
+      <p class="text-lg leading-relaxed">
+        Trabalhamos com três farinhas, uma delas moída por nós. Nada de melhorador,
+        nada de conservante, nada de gelo na massa. O que sai do forno às seis e meia
+        é o que deu para fazer com o que a noite permitiu.
+      </p>
+      <a href="#casa" class="mono lnk mt-8 inline-block text-[12px] uppercase tracking-widest">Ler o manifesto completo →</a>
+    </div>
+
+    <div class="relative border-b border-black/12 lg:col-span-2 lg:border-b-0">
+      <img src="https://images.unsplash.com/photo-1608198093002-ad4e005484ec?auto=format&fit=crop&w=1600&q=85" alt="Pão de fermentação natural cortado" class="h-full min-h-[340px] w-full object-cover lg:min-h-[480px]">
+      <div class="mono absolute bottom-4 left-4 bg-paper px-3 py-2 text-[10px] uppercase tracking-widest">Fig. 01 — Miolo após 36h de frio</div>
+    </div>
+  </div>
+</section>
+
+<!-- ======== TICKER ======== -->
+<div class="relative z-10 overflow-hidden border-b border-black/12 bg-tomato py-3">
+  <div class="flex w-max animate-[mn_26s_linear_infinite] whitespace-nowrap anton text-2xl uppercase text-paper">
+    <template x-for="i in 2">
+      <div class="flex gap-6 pr-6">
+        <span>Fornada 06h30</span><span>◆</span><span>Fornada 11h00</span><span>◆</span>
+        <span>Fornada 16h30</span><span>◆</span><span>Vinho natural até 23h</span><span>◆</span>
+        <span>Segunda fechado</span><span>◆</span>
+      </div>
+    </template>
+  </div>
+</div>
+
+<!-- ======== NÚMEROS ======== -->
+<section class="relative z-10 overflow-hidden border-b border-black/12 bg-bone">
+ <div class="-mb-px -mr-px grid sm:grid-cols-2 lg:grid-cols-4">
+  <template x-for="(s,i) in [
+    {n:'36h', l:'Fermentação mínima'},
+    {n:'03',  l:'Farinhas em uso'},
+    {n:'480', l:'Pães por dia'},
+    {n:'12',  l:'Produtores parceiros'}
+  ]" :key="s.l">
+    <div class="border-b border-r border-black/12 p-8 lg:p-10">
+      <p class="mono text-[11px] text-gray1" x-text="'0'+(i+1)"></p>
+      <p class="anton mt-5 text-6xl lg:text-7xl" x-text="s.n"></p>
+      <p class="mono mt-3 text-[11px] uppercase tracking-[.18em] text-gray1" x-text="s.l"></p>
+    </div>
+  </template>
+ </div>
+</section>
+
+<!-- ======== CARDÁPIO (lista + preview no hover) ======== -->
+<section id="cardapio" class="relative z-10 border-b border-black/12"
+         x-data="{
+           img:null, x:0, y:0,
+           itens:[
+            {n:'Pão do Dia',            d:'Trigo T2, centeio 15%, semente de girassol',    p:'34', i:'https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=800&q=80'},
+            {n:'Miche de Trigo Barbela',d:'Grão brasileiro quase extinto, 1,4 kg',         p:'52', i:'https://images.unsplash.com/photo-1598373182133-52452f7691ef?auto=format&fit=crop&w=800&q=80'},
+            {n:'Baguete Tradition',     d:'Farinha T65, sem melhorador, 18h de frio',      p:'19', i:'https://images.unsplash.com/photo-1549931319-a545dcf3bc73?auto=format&fit=crop&w=800&q=80'},
+            {n:'Focaccia Genovese',     d:'Azeite Frantoio, alecrim, flor de sal',         p:'38', i:'https://images.unsplash.com/photo-1568254183919-78a4f43a2877?auto=format&fit=crop&w=800&q=80'},
+            {n:'Croissant',             d:'Manteiga Charentes 84%, 72h de laminação',      p:'17', i:'https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=800&q=80'},
+            {n:'Sanduíche do Forno',    d:'Mortadela artesanal, mostarda e picles do dia', p:'46', i:'https://images.unsplash.com/photo-1528735602780-2552fd46c7af?auto=format&fit=crop&w=800&q=80'},
+            {n:'Ciabatta de Azeitona',  d:'Azeitona preta curada em casa, 24h',            p:'32', i:'https://images.unsplash.com/photo-1586444248902-2f64eddc13df?auto=format&fit=crop&w=800&q=80'},
+            {n:'Cardamomo Bun',         d:'Massa dinamarquesa, cardamomo moído na hora',   p:'22', i:'https://images.unsplash.com/photo-1600271886742-f049cd451bba?auto=format&fit=crop&w=800&q=80'}
+           ]
+         }"
+         @mousemove="x=$event.clientX; y=$event.clientY">
+
+  <div class="flex flex-wrap items-end justify-between gap-6 border-b border-black/12 px-6 py-10 lg:px-14">
+    <div>
+      <p class="mono mb-4 text-[11px] uppercase tracking-[.2em] text-tomato">Seção 01</p>
+      <h2 class="anton text-6xl uppercase leading-[.95] lg:text-8xl">O que temos</h2>
+    </div>
+    <p class="mono max-w-xs text-[12px] leading-relaxed text-gray1">Lista sujeita ao que o dia permitiu. Passe o mouse para ver.</p>
+  </div>
+
+  <div>
+    <template x-for="(it,k) in itens" :key="it.n">
+      <div @mouseenter="img=it.i" @mouseleave="img=null"
+           class="group flex cursor-pointer items-center gap-4 border-b border-black/12 px-6 py-6 transition-colors duration-300 hover:bg-black hover:text-paper lg:gap-10 lg:px-14 lg:py-8">
+        <span class="mono w-8 shrink-0 text-[11px] text-gray1 transition-colors group-hover:text-tomato" x-text="'0'+(k+1)"></span>
+        <h3 class="anton min-w-0 text-2xl uppercase leading-[1.05] sm:text-3xl lg:shrink-0 lg:text-5xl" x-text="it.n"></h3>
+        <span class="hidden h-px flex-1 bg-current opacity-20 lg:block"></span>
+        <p class="mono hidden max-w-xs flex-1 text-[12px] leading-relaxed opacity-60 lg:block" x-text="it.d"></p>
+        <span class="anton ml-auto shrink-0 text-2xl lg:text-4xl" x-text="'R$'+it.p"></span>
+      </div>
+    </template>
+  </div>
+
+  <div x-cloak x-show="img" x-transition.opacity.duration.200ms
+       :style="'left:'+x+'px; top:'+y+'px'"
+       class="pointer-events-none fixed z-[60] hidden -translate-x-1/2 -translate-y-1/2 lg:block">
+    <img :src="img" alt="" class="h-72 w-56 border border-paper/20 object-cover shadow-2xl">
+  </div>
+</section>
+
+<!-- ======== BANDA DE IMAGEM ======== -->
+<section class="relative z-10 grid border-b border-black/12 lg:grid-cols-3">
+  <img src="https://images.unsplash.com/photo-1509365465985-25d11c17e812?auto=format&fit=crop&w=900&q=80" alt="Padeiro trabalhando" class="h-72 w-full border-b border-black/12 object-cover lg:h-96 lg:border-b-0 lg:border-r">
+  <img src="https://images.unsplash.com/photo-1517433670267-08bbd4be890f?auto=format&fit=crop&w=900&q=80" alt="Balcão" class="h-72 w-full border-b border-black/12 object-cover lg:h-96 lg:border-b-0 lg:border-r">
+  <img src="https://images.unsplash.com/photo-1568254183919-78a4f43a2877?auto=format&fit=crop&w=900&q=80" alt="Focaccia" class="h-72 w-full object-cover lg:h-96">
+</section>
+
+<!-- ======== A CASA ======== -->
+<section id="casa" class="relative z-10 border-b border-black/12">
+  <div class="grid lg:grid-cols-2">
+    <div class="border-b border-black/12 p-6 lg:border-b-0 lg:border-r lg:p-14">
+      <p class="mono mb-4 text-[11px] uppercase tracking-[.2em] text-tomato">Seção 02</p>
+      <h2 class="anton text-6xl uppercase leading-[.95] lg:text-8xl">A casa</h2>
+
+      <div class="mt-12 space-y-10">
+        <div class="border-t border-black/12 pt-6">
+          <p class="mono mb-3 text-[11px] uppercase tracking-[.18em] text-gray1">2016 — Começo</p>
+          <p class="text-lg leading-relaxed">
+            Abrimos com um forno usado comprado de uma pizzaria falida e a certeza de que
+            ninguém em São Paulo estava fazendo pão com trigo brasileiro. Estávamos certos —
+            e isso quase nos quebrou nos primeiros dois anos.
+          </p>
+        </div>
+        <div class="border-t border-black/12 pt-6">
+          <p class="mono mb-3 text-[11px] uppercase tracking-[.18em] text-gray1">2019 — Moinho</p>
+          <p class="text-lg leading-relaxed">
+            Instalamos um moinho de pedra austríaco no fundo da loja. Desde então moemos
+            nosso próprio trigo barbela, comprado direto de doze famílias no Paraná.
+          </p>
+        </div>
+        <div class="border-t border-black/12 pt-6">
+          <p class="mono mb-3 text-[11px] uppercase tracking-[.18em] text-gray1">2023 — Bar</p>
+          <p class="text-lg leading-relaxed">
+            A padaria virou bar depois das 18h. Vinho natural, pão de ontem torrado com azeite
+            e conversa até as onze. Não aceitamos reserva e não pretendemos aceitar.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="relative">
+      <img src="https://images.unsplash.com/photo-1464195244916-405fa0a82545?auto=format&fit=crop&w=1200&q=85" alt="Salão da Massa Nostra" class="h-full min-h-[420px] w-full object-cover">
+      <div class="absolute inset-x-0 bottom-0 bg-black/85 p-8 text-paper backdrop-blur-xs lg:p-12">
+        <p class="anton text-3xl uppercase leading-tight lg:text-5xl">“Não vendemos pão.<br>Vendemos <span class="text-tomato">tempo</span>.”</p>
+        <p class="mono mt-5 text-[11px] uppercase tracking-[.2em] text-paper/50">Téo Bianchi — sócio-padeiro</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======== PANIFICAÇÃO / PROCESSO ======== -->
+<section id="panificacao" class="relative z-10 border-b border-black/12 bg-black text-paper">
+  <div class="border-b border-paper/12 px-6 py-10 lg:px-14">
+    <p class="mono mb-4 text-[11px] uppercase tracking-[.2em] text-tomato">Seção 03</p>
+    <h2 class="anton text-6xl uppercase leading-[.95] lg:text-8xl">O método</h2>
+  </div>
+
+  <div class="overflow-hidden">
+   <div class="-mb-px -mr-px grid sm:grid-cols-2 lg:grid-cols-4">
+    <template x-for="(e,i) in [
+      {t:'Moagem', d:'Trigo moído em pedra na véspera. O germe permanece na farinha, o que reduz sua validade para cinco dias — e é exatamente esse o ponto.'},
+      {t:'Autólise', d:'Farinha e água descansam por duas horas antes do levain entrar. As enzimas fazem sozinhas o trabalho que a máquina faria à força.'},
+      {t:'Frio', d:'Trinta e seis horas em câmara a 4 °C. É aqui que o ácido acético aparece e o pão ganha o sabor que nenhum atalho reproduz.'},
+      {t:'Forno', d:'Lastro de pedra a 250 °C com vapor nos primeiros doze minutos. Assado escuro, sempre. Crosta clara é pão inacabado.'}
+    ]" :key="e.t">
+      <div class="border-b border-r border-paper/12 p-8 lg:p-10">
+        <p class="anton text-7xl text-paper/12" x-text="'0'+(i+1)"></p>
+        <h3 class="anton mt-6 text-3xl uppercase leading-[1.05]" x-text="e.t"></h3>
+        <p class="mt-4 text-[15px] leading-relaxed text-paper/55" x-text="e.d"></p>
+      </div>
+    </template>
+   </div>
+  </div>
+</section>
+
+<!-- ======== LUGAR ======== -->
+<section id="lugar" class="relative z-10 border-b border-black/12">
+  <div class="grid lg:grid-cols-2">
+    <div class="border-b border-black/12 p-6 lg:border-b-0 lg:border-r lg:p-14">
+      <p class="mono mb-4 text-[11px] uppercase tracking-[.2em] text-tomato">Seção 04</p>
+      <h2 class="anton text-6xl uppercase leading-[.95] lg:text-8xl">Onde<br>estamos</h2>
+
+      <div class="mono mt-12 divide-y divide-black/12 border-y border-black/12 text-[13px]">
+        <div class="flex justify-between py-4"><span class="uppercase tracking-widest text-gray1">Ter — Sex</span><span>06h30 — 23h00</span></div>
+        <div class="flex justify-between py-4"><span class="uppercase tracking-widest text-gray1">Sábado</span><span>07h00 — 23h00</span></div>
+        <div class="flex justify-between py-4"><span class="uppercase tracking-widest text-gray1">Domingo</span><span>07h00 — 16h00</span></div>
+        <div class="flex justify-between py-4"><span class="uppercase tracking-widest text-gray1">Segunda</span><span class="text-tomato">Fechado</span></div>
+      </div>
+
+      <div class="mt-10 space-y-1 text-lg">
+        <p class="font-semibold">Rua Aspicuelta, 388</p>
+        <p class="text-gray1">Vila Madalena — São Paulo, SP</p>
+        <p class="text-gray1">+55 11 3812 0044</p>
+        <p class="text-gray1">bomdia@massanostra.com.br</p>
+      </div>
+
+      <a href="#" class="mono mt-10 inline-flex items-center gap-4 border border-black px-8 py-4 text-[12px] uppercase tracking-widest transition-colors hover:bg-black hover:text-paper">
+        Como chegar
+        <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" d="M7 17L17 7m0 0H9m8 0v8"/></svg>
+      </a>
+    </div>
+
+    <div class="p-6 lg:p-14">
+      <p class="mono mb-4 text-[11px] uppercase tracking-[.2em] text-tomato">Reserve seu pão</p>
+      <h3 class="anton text-4xl uppercase leading-[1.05] lg:text-6xl">Separamos<br>para você</h3>
+      <p class="mt-6 max-w-md leading-relaxed text-gray1">
+        Peça até as 20h do dia anterior e deixamos separado no balcão até as 11h.
+        Depois disso, entra na fila com todo mundo.
+      </p>
+
+      <form x-data="{ok:false}" @submit.prevent="ok=true" class="mt-10">
+        <template x-if="!ok">
+          <div class="space-y-6">
+            <div>
+              <label class="mono text-[11px] uppercase tracking-widest text-gray1">Nome</label>
+              <input required type="text" class="mt-2 w-full border-b border-black bg-transparent pb-3 text-lg outline-none transition focus:border-tomato">
+            </div>
+            <div class="grid gap-6 sm:grid-cols-2">
+              <div>
+                <label class="mono text-[11px] uppercase tracking-widest text-gray1">Telefone</label>
+                <input required type="tel" class="mt-2 w-full border-b border-black bg-transparent pb-3 text-lg outline-none transition focus:border-tomato">
+              </div>
+              <div>
+                <label class="mono text-[11px] uppercase tracking-widest text-gray1">Retirada</label>
+                <input required type="date" class="mt-2 w-full border-b border-black bg-transparent pb-3 text-lg outline-none transition focus:border-tomato">
+              </div>
+            </div>
+            <div>
+              <label class="mono text-[11px] uppercase tracking-widest text-gray1">O que separar</label>
+              <textarea rows="2" placeholder="1 miche, 2 baguetes, 4 croissants" class="mt-2 w-full resize-none border-b border-black bg-transparent pb-3 text-lg outline-none transition placeholder:text-gray1/40 focus:border-tomato"></textarea>
+            </div>
+            <button class="mono w-full bg-black py-5 text-[12px] uppercase tracking-widest text-paper transition-colors hover:bg-tomato">Enviar reserva</button>
+          </div>
+        </template>
+        <template x-if="ok">
+          <div class="border border-black p-10 text-center">
+            <p class="anton text-5xl uppercase text-tomato">Anotado</p>
+            <p class="mono mt-5 text-[13px] leading-relaxed text-gray1">Seu pão fica no balcão até as 11h.<br>Confirmamos por mensagem.</p>
+          </div>
+        </template>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- ======== FOOTER ======== -->
+<footer class="relative z-10 bg-black text-paper">
+  <div class="border-b border-paper/12 px-6 py-16 lg:px-14">
+    <h2 class="anton text-[15vw] uppercase leading-[.95] lg:text-[13vw]">MASSA<br><span class="text-tomato">NOSTRA</span></h2>
+  </div>
+
+  <div class="mono grid gap-10 px-6 py-12 text-[12px] sm:grid-cols-2 lg:grid-cols-4 lg:px-14">
+    <div>
+      <p class="mb-5 uppercase tracking-[.2em] text-paper/40">Navegar</p>
+      <ul class="space-y-2.5">
+        <li><a href="#cardapio" class="lnk">Cardápio</a></li>
+        <li><a href="#casa" class="lnk">A casa</a></li>
+        <li><a href="#panificacao" class="lnk">O método</a></li>
+        <li><a href="#lugar" class="lnk">Onde estamos</a></li>
+      </ul>
+    </div>
+    <div>
+      <p class="mb-5 uppercase tracking-[.2em] text-paper/40">Serviços</p>
+      <ul class="space-y-2.5">
+        <li><a href="#" class="lnk">Reserva de pão</a></li>
+        <li><a href="#" class="lnk">Atacado / restaurantes</a></li>
+        <li><a href="#" class="lnk">Cursos de fermentação</a></li>
+        <li><a href="#" class="lnk">Trabalhe conosco</a></li>
+      </ul>
+    </div>
+    <div>
+      <p class="mb-5 uppercase tracking-[.2em] text-paper/40">Contato</p>
+      <ul class="space-y-2.5 text-paper/70">
+        <li>Rua Aspicuelta, 388</li>
+        <li>Vila Madalena — SP</li>
+        <li>+55 11 3812 0044</li>
+        <li>bomdia@massanostra.com.br</li>
+      </ul>
+    </div>
+    <div>
+      <p class="mb-5 uppercase tracking-[.2em] text-paper/40">Siga</p>
+      <ul class="space-y-2.5">
+        <li><a href="#" class="lnk">Instagram</a></li>
+        <li><a href="#" class="lnk">Facebook</a></li>
+        <li><a href="#" class="lnk">WhatsApp</a></li>
+        <li><a href="#" class="lnk">Newsletter</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="mono flex flex-col justify-between gap-3 border-t border-paper/12 px-6 py-6 text-[11px] uppercase tracking-widest text-paper/40 sm:flex-row lg:px-14">
+    <p>© 2026 Massa Nostra Panificação Ltda.</p>
+    <p>Trigo brasileiro · Fermentação natural · Forno a lenha</p>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Maison Dorée — Boulangerie & Pâtisserie Française</title>
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet">
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
+<style type="text/tailwindcss">
+@import "tailwindcss";
+
+@theme {
+  --color-ivory:    #FBF9F4;
+  --color-pearl:    #F1EBDF;
+  --color-gold:     #B08D45;
+  --color-lgold:    #D9C089;
+  --color-ink:      #22201C;
+  --color-graphite: #4A4640;
+
+  --font-serif: "Cormorant Garamond", Georgia, serif;
+  --font-sans:  Jost, system-ui, sans-serif;
+}
+
+@layer base {
+  html{scroll-behavior:smooth;scroll-padding-top:6rem}
+  body{background:#FBF9F4}
+  /* o v4 removeu o cursor:pointer padrão dos botões */
+  button:not(:disabled),[role="button"]:not(:disabled){cursor:pointer}
+}
+
+@layer components {
+  .hairline{height:1px;background:linear-gradient(to right,transparent,#B08D45,transparent)}
+  .goldtext{background:linear-gradient(100deg,#8A6D2C,#D9C089 45%,#B08D45);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .up{opacity:0;transform:translateY(34px);transition:all 1.1s cubic-bezier(.16,.84,.32,1)}
+  .up.in{opacity:1;transform:none}
+  .kicker{font-size:10px;letter-spacing:.42em;text-transform:uppercase}
+}
+
+[x-cloak]{display:none!important}
+</style>
+</head>
+<body class="font-sans font-light text-ink antialiased selection:bg-gold selection:text-ivory">
+
+<!-- ========= SIDE INDEX (desktop) ========= -->
+<div class="fixed left-8 top-1/2 z-40 hidden -translate-y-1/2 min-[1600px]:block">
+  <!-- writing-mode vai nos links, não no container: no container o flex-col empilharia na horizontal -->
+  <div class="flex flex-col items-center gap-6">
+    <a href="#collection" class="kicker text-graphite/45 transition hover:text-gold [writing-mode:vertical-rl]">Collection</a>
+    <a href="#maison"     class="kicker text-graphite/45 transition hover:text-gold [writing-mode:vertical-rl]">La Maison</a>
+    <a href="#galerie"    class="kicker text-graphite/45 transition hover:text-gold [writing-mode:vertical-rl]">Galerie</a>
+    <a href="#reserver"   class="kicker text-graphite/45 transition hover:text-gold [writing-mode:vertical-rl]">Réserver</a>
+  </div>
+</div>
+
+<!-- ========= HEADER ========= -->
+<div x-data="{ open:false, top:true }" x-init="window.addEventListener('scroll',()=>top = window.scrollY < 30)">
+  <header :class="top ? 'py-8' : 'bg-ivory/90 py-4 shadow-[0_1px_30px_rgba(34,32,28,.05)] backdrop-blur-xl'" class="fixed inset-x-0 top-0 z-50 transition-all duration-700">
+    <div class="mx-auto flex max-w-[1400px] items-center justify-between px-7">
+      <nav class="hidden flex-1 items-center gap-10 text-[11px] uppercase tracking-[.26em] text-graphite/70 lg:flex">
+        <a href="#collection" class="transition hover:text-gold">Collection</a>
+        <a href="#maison" class="transition hover:text-gold">La Maison</a>
+      </nav>
+
+      <a href="#" class="flex flex-col items-center lg:flex-1">
+        <span class="font-serif text-3xl leading-none tracking-wide">Maison Dorée</span>
+        <span class="mt-1.5 kicker text-gold">Paris · 1923</span>
+      </a>
+
+      <div class="hidden flex-1 items-center justify-end gap-10 text-[11px] uppercase tracking-[.26em] text-graphite/70 lg:flex">
+        <a href="#galerie" class="transition hover:text-gold">Galerie</a>
+        <a href="#reserver" class="border border-gold/40 px-6 py-3 text-gold transition hover:bg-gold hover:text-ivory">Réserver</a>
+      </div>
+
+      <button @click="open=true" class="lg:hidden" aria-label="Menu">
+        <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24"><path d="M3 8h18M3 16h18"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <div x-cloak x-show="open" x-transition.opacity.duration.500ms class="fixed inset-0 z-[60] bg-ivory">
+    <div class="flex h-full flex-col p-8">
+      <button @click="open=false" class="self-end"><svg class="h-7 w-7" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+      <nav class="my-auto flex flex-col items-center gap-8 font-serif text-5xl">
+        <a @click="open=false" href="#collection">Collection</a>
+        <a @click="open=false" href="#maison">La Maison</a>
+        <a @click="open=false" href="#galerie">Galerie</a>
+        <a @click="open=false" href="#reserver">Réserver</a>
+      </nav>
+      <p class="text-center kicker text-gold">Rue Oscar Freire, 1923</p>
+    </div>
+  </div>
+</div>
+
+<!-- ========= HERO : split ========= -->
+<section class="grid min-h-screen lg:grid-cols-2">
+  <div class="flex items-center justify-center px-8 pb-16 pt-40 lg:px-20 lg:pb-0">
+    <div class="max-w-lg">
+      <div class="mb-9 flex items-center gap-4">
+        <span class="h-px w-14 bg-gold"></span>
+        <span class="kicker text-gold">Boulangerie · Pâtisserie</span>
+      </div>
+      <h1 class="font-serif text-[3.6rem] font-light leading-[.95] sm:text-7xl lg:text-[5.4rem]">
+        L'art de la<br><span class="italic goldtext">viennoiserie</span>
+      </h1>
+      <p class="mt-9 max-w-md text-[15px] leading-[1.9] text-graphite/70">
+        Uma casa fundada em Paris em 1923, hoje em São Paulo. Manteiga de Charentes-Poitou,
+        farinha T65 e a paciência de setenta e duas horas de laminação a frio.
+      </p>
+
+      <div class="mt-11 flex flex-wrap items-center gap-8">
+        <a href="#collection" class="group relative overflow-hidden border border-ink px-10 py-4 text-[11px] uppercase tracking-[.24em]">
+          <span class="relative z-10 transition-colors duration-500 group-hover:text-ivory">Ver a collection</span>
+          <span class="absolute inset-0 origin-bottom scale-y-0 bg-ink transition-transform duration-500 group-hover:scale-y-100"></span>
+        </a>
+        <a href="#reserver" class="group flex items-center gap-3 text-[11px] uppercase tracking-[.24em] text-graphite">
+          Reservar mesa
+          <span class="h-px w-8 bg-gold transition-all duration-500 group-hover:w-14"></span>
+        </a>
+      </div>
+
+      <div class="mt-16 flex items-center gap-9">
+        <div><p class="font-serif text-3xl">102</p><p class="mt-1 kicker text-graphite/45">anos</p></div>
+        <span class="h-9 w-px bg-ink/10"></span>
+        <div><p class="font-serif text-3xl">72<span class="text-gold">h</span></p><p class="mt-1 kicker text-graphite/45">laminação</p></div>
+        <span class="h-9 w-px bg-ink/10"></span>
+        <div><p class="font-serif text-3xl">04</p><p class="mt-1 kicker text-graphite/45">chefs MOF</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="relative min-h-[62vh] overflow-hidden lg:min-h-screen">
+    <img src="https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=1600&q=85" alt="Croissants recém-assados" class="h-full w-full object-cover">
+    <div class="absolute inset-0 bg-linear-to-br from-ivory/25 via-transparent to-ink/25"></div>
+    <div class="absolute bottom-9 left-9 right-9 border border-ivory/30 bg-ink/25 p-7 backdrop-blur-md sm:left-auto sm:w-80">
+      <p class="kicker text-lgold">Fournée du jour</p>
+      <p class="mt-3 font-serif text-2xl text-ivory">Croissant aux amandes</p>
+      <p class="mt-2 text-[13px] leading-relaxed text-ivory/60">Recheado com creme de amêndoas da Provença. Disponível até as 11h.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ========= VALEURS ========= -->
+<section class="mx-auto max-w-[1400px] px-7 py-28 lg:py-40">
+  <div class="hairline"></div>
+  <div class="up grid gap-14 py-20 md:grid-cols-3">
+    <div class="text-center">
+      <p class="font-serif text-5xl text-gold/25">I</p>
+      <h3 class="mt-5 font-serif text-2xl">Beurre AOP</h3>
+      <p class="mx-auto mt-4 max-w-xs text-[14px] leading-[1.9] text-graphite/60">Manteiga Charentes-Poitou com 84% de matéria gorda, importada quinzenalmente.</p>
+    </div>
+    <div class="text-center md:border-x md:border-ink/10">
+      <p class="font-serif text-5xl text-gold/25">II</p>
+      <h3 class="mt-5 font-serif text-2xl">Levain naturel</h3>
+      <p class="mx-auto mt-4 max-w-xs text-[14px] leading-[1.9] text-graphite/60">Fermento vivo mantido desde 1923, alimentado duas vezes ao dia sem interrupção.</p>
+    </div>
+    <div class="text-center">
+      <p class="font-serif text-5xl text-gold/25">III</p>
+      <h3 class="mt-5 font-serif text-2xl">Fait à la main</h3>
+      <p class="mx-auto mt-4 max-w-xs text-[14px] leading-[1.9] text-graphite/60">Cada peça é laminada, torneada e finalizada à mão pela brigada do ateliê.</p>
+    </div>
+  </div>
+  <div class="hairline"></div>
+</section>
+
+<!-- ========= COLLECTION ========= -->
+<section id="collection" class="mx-auto max-w-[1400px] px-7 pb-28 lg:pb-40"
+         x-data="{ cat:'Tout', itens:[
+    {n:'Croissant au Beurre',   c:'Viennoiserie', p:'18',  d:'Vinte e sete camadas, miolo em favo de mel.',        i:'https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=900&q=80'},
+    {n:'Pain au Chocolat',      c:'Viennoiserie', p:'21',  d:'Duas barras de chocolate Valrhona 70%.',            i:'https://images.unsplash.com/photo-1509365465985-25d11c17e812?auto=format&fit=crop&w=900&q=80'},
+    {n:'Éclair Vanille Bourbon',c:'Pâtisserie',   p:'32',  d:'Fava de baunilha de Madagascar, glacê espelhado.',  i:'https://images.unsplash.com/photo-1488477181946-6428a0291777?auto=format&fit=crop&w=900&q=80'},
+    {n:'Tarte au Citron',       c:'Pâtisserie',   p:'36',  d:'Merengue italiano queimado no maçarico.',           i:'https://images.unsplash.com/photo-1519915028121-7d3463d20b13?auto=format&fit=crop&w=900&q=80'},
+    {n:'Baguette Tradition',    c:'Boulangerie',  p:'16',  d:'Farinha T65, sem melhorador, casca cantante.',      i:'https://images.unsplash.com/photo-1549931319-a545dcf3bc73?auto=format&fit=crop&w=900&q=80'},
+    {n:'Pain de Campagne',      c:'Boulangerie',  p:'34',  d:'Centeio 20%, fermentação de trinta e seis horas.',  i:'https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=900&q=80'},
+    {n:'Macarons — caixa 12',   c:'Pâtisserie',   p:'128', d:'Doze sabores da estação, caixa em papel dourado.',  i:'https://images.unsplash.com/photo-1569864358642-9d1684040f43?auto=format&fit=crop&w=900&q=80'},
+    {n:'Chausson aux Pommes',   c:'Viennoiserie', p:'24',  d:'Maçã reineta caramelizada em folhado invertido.',   i:'https://images.unsplash.com/photo-1587241321921-91a834d6d191?auto=format&fit=crop&w=900&q=80'}
+  ],
+  get lista(){ return this.cat==='Tout' ? this.itens : this.itens.filter(x=>x.c===this.cat) } }">
+
+  <div class="up flex flex-col items-center text-center">
+    <span class="kicker text-gold">La Collection</span>
+    <h2 class="mt-5 font-serif text-5xl font-light lg:text-7xl">Nos <span class="italic">spécialités</span></h2>
+    <p class="mt-6 max-w-lg text-[15px] leading-[1.9] text-graphite/60">Produção limitada, assada três vezes ao dia. Encomendas com 24 horas de antecedência.</p>
+
+    <div class="mt-12 flex flex-wrap justify-center gap-2">
+      <template x-for="c in ['Tout','Viennoiserie','Pâtisserie','Boulangerie']" :key="c">
+        <button @click="cat=c" :class="cat===c ? 'border-gold bg-gold text-ivory' : 'border-ink/15 text-graphite/70 hover:border-gold hover:text-gold'"
+                class="border px-7 py-3 text-[10px] uppercase tracking-[.28em] transition-all duration-500" x-text="c"></button>
+      </template>
+    </div>
+  </div>
+
+  <div class="mt-16 grid gap-x-8 gap-y-16 sm:grid-cols-2 lg:grid-cols-4">
+    <template x-for="p in lista" :key="p.n">
+      <article class="group">
+        <div class="relative overflow-hidden bg-pearl">
+          <img :src="p.i" :alt="p.n" class="aspect-[3/4] w-full object-cover transition-all duration-[1200ms] ease-out group-hover:scale-105">
+          <div class="absolute inset-0 flex items-end justify-center bg-ink/35 p-6 opacity-0 backdrop-blur-[2px] transition-opacity duration-500 group-hover:opacity-100">
+            <button class="w-full border border-ivory/60 py-3 text-[10px] uppercase tracking-[.24em] text-ivory transition hover:bg-ivory hover:text-ink">Ajouter</button>
+          </div>
+        </div>
+        <div class="mt-5 flex items-baseline justify-between gap-3 border-b border-ink/10 pb-3">
+          <h3 class="font-serif text-xl leading-tight" x-text="p.n"></h3>
+          <span class="shrink-0 text-[13px] text-gold" x-text="'R$ '+p.p"></span>
+        </div>
+        <p class="mt-3 text-[13px] leading-relaxed text-graphite/55" x-text="p.d"></p>
+        <p class="mt-2 kicker text-graphite/35" x-text="p.c"></p>
+      </article>
+    </template>
+  </div>
+</section>
+
+<!-- ========= LA MAISON (asymmetric) ========= -->
+<section id="maison" class="bg-pearl">
+  <div class="mx-auto max-w-[1400px] px-7 py-28 lg:py-40">
+    <div class="grid items-center gap-16 lg:grid-cols-12">
+      <div class="up lg:col-span-5 lg:col-start-1">
+        <span class="kicker text-gold">La Maison</span>
+        <h2 class="mt-5 font-serif text-5xl font-light leading-[1.05] lg:text-6xl">Um século<br>de <span class="italic goldtext">gestos</span><br>repetidos</h2>
+        <p class="mt-8 text-[15px] leading-[2] text-graphite/70">
+          Georges Aubert abriu a primeira Maison Dorée na Rue Saint-Antoine em 1923.
+          Um forno, uma bancada de mármore e o compromisso de que nada sairia da casa
+          sem ter passado por suas mãos.
+        </p>
+        <p class="mt-5 text-[15px] leading-[2] text-graphite/70">
+          Quatro gerações depois, a bancada de mármore é a mesma. Foi transportada de
+          navio até São Paulo em 1998 e continua sendo onde toda massa folhada descansa.
+        </p>
+
+        <div class="mt-12 space-y-6">
+          <div class="flex gap-6 border-t border-ink/10 pt-6">
+            <span class="font-serif text-xl text-gold">1923</span>
+            <p class="text-[14px] leading-relaxed text-graphite/65">Fundação em Paris por Georges Aubert, ex-aprendiz da Maison Ladurée.</p>
+          </div>
+          <div class="flex gap-6 border-t border-ink/10 pt-6">
+            <span class="font-serif text-xl text-gold">1974</span>
+            <p class="text-[14px] leading-relaxed text-graphite/65">Prêmio Meilleur Croissant de Paris, conquistado por Hélène Aubert.</p>
+          </div>
+          <div class="flex gap-6 border-t border-ink/10 pt-6">
+            <span class="font-serif text-xl text-gold">1998</span>
+            <p class="text-[14px] leading-relaxed text-graphite/65">Abertura da casa brasileira nos Jardins, com a mesma brigada francesa.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="up lg:col-span-6 lg:col-start-7">
+        <div class="grid grid-cols-2 gap-5">
+          <img src="https://images.unsplash.com/photo-1517686469429-8bdb88b9f907?auto=format&fit=crop&w=800&q=80" alt="Salão da casa" class="aspect-[3/4] w-full object-cover">
+          <div class="space-y-5 pt-14">
+            <img src="https://images.unsplash.com/photo-1587241321921-91a834d6d191?auto=format&fit=crop&w=800&q=80" alt="Detalhe de folhado" class="aspect-square w-full object-cover">
+            <img src="https://images.unsplash.com/photo-1571115177098-24ec42ed204d?auto=format&fit=crop&w=800&q=80" alt="Croissant" class="aspect-[3/4] w-full object-cover">
+          </div>
+        </div>
+        <p class="mt-8 max-w-sm font-serif text-xl italic leading-relaxed text-graphite/60">
+          “A manteiga não perdoa pressa. Ou você respeita a temperatura, ou ela te entrega.”
+        </p>
+        <p class="mt-3 kicker text-gold">— Hélène Aubert, cheffe pâtissière</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========= GALERIE + LIGHTBOX ========= -->
+<section id="galerie" class="mx-auto max-w-[1400px] px-7 py-28 lg:py-40"
+         x-data="{ open:false, idx:0, fotos:[
+    'https://images.unsplash.com/photo-1568254183919-78a4f43a2877?auto=format&fit=crop&w=1400&q=85',
+    'https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=1400&q=85',
+    'https://images.unsplash.com/photo-1464195244916-405fa0a82545?auto=format&fit=crop&w=1400&q=85',
+    'https://images.unsplash.com/photo-1519915028121-7d3463d20b13?auto=format&fit=crop&w=1400&q=85',
+    'https://images.unsplash.com/photo-1488477181946-6428a0291777?auto=format&fit=crop&w=1400&q=85',
+    'https://images.unsplash.com/photo-1549931319-a545dcf3bc73?auto=format&fit=crop&w=1400&q=85'
+  ] }"
+  @keydown.window.escape="open=false"
+  @keydown.window.arrow-right="if(open) idx=(idx+1)%fotos.length"
+  @keydown.window.arrow-left="if(open) idx=(idx-1+fotos.length)%fotos.length">
+
+  <div class="up flex flex-wrap items-end justify-between gap-6">
+    <div>
+      <span class="kicker text-gold">Galerie</span>
+      <h2 class="mt-5 font-serif text-5xl font-light lg:text-6xl">Dentro do <span class="italic">atelier</span></h2>
+    </div>
+    <p class="max-w-xs text-[14px] leading-relaxed text-graphite/55">Clique para ampliar. Fotografias de Théo Marchand, inverno de 2025.</p>
+  </div>
+
+  <div class="mt-14 grid auto-rows-[190px] grid-cols-2 gap-4 lg:grid-cols-4">
+    <template x-for="(f,k) in fotos" :key="k">
+      <button @click="idx=k; open=true"
+              :class="k===0 ? 'row-span-2 col-span-2' : (k===3 ? 'row-span-2' : '')"
+              class="group relative overflow-hidden bg-pearl">
+        <img :src="f" alt="" class="h-full w-full object-cover transition-transform duration-[1200ms] group-hover:scale-110">
+        <span class="absolute inset-0 bg-ink/0 transition-colors duration-500 group-hover:bg-ink/25"></span>
+        <span class="absolute bottom-4 left-4 kicker text-ivory opacity-0 transition-opacity duration-500 group-hover:opacity-100" x-text="'0'+(k+1)"></span>
+      </button>
+    </template>
+  </div>
+
+  <div x-cloak x-show="open" x-transition.opacity class="fixed inset-0 z-[80] flex items-center justify-center bg-ink/95 p-6">
+    <button @click="open=false" class="absolute right-8 top-8 text-ivory/70 transition hover:text-ivory"><svg class="h-8 w-8" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    <button @click="idx=(idx-1+fotos.length)%fotos.length" class="absolute left-6 text-ivory/60 transition hover:text-ivory"><svg class="h-10 w-10" fill="none" stroke="currentColor" stroke-width=".8" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
+    <img :src="fotos[idx]" alt="" class="max-h-[82vh] max-w-full object-contain">
+    <button @click="idx=(idx+1)%fotos.length" class="absolute right-6 text-ivory/60 transition hover:text-ivory"><svg class="h-10 w-10" fill="none" stroke="currentColor" stroke-width=".8" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></button>
+    <p class="absolute bottom-8 kicker text-ivory/50" x-text="String(idx+1).padStart(2,'0')+' / '+String(fotos.length).padStart(2,'0')"></p>
+  </div>
+</section>
+
+<!-- ========= RÉSERVER ========= -->
+<section id="reserver" class="relative overflow-hidden bg-ink text-ivory">
+  <img src="https://images.unsplash.com/photo-1517433670267-08bbd4be890f?auto=format&fit=crop&w=1800&q=80" alt="" class="absolute inset-0 h-full w-full object-cover opacity-15">
+  <div class="relative mx-auto grid max-w-[1400px] gap-16 px-7 py-28 lg:grid-cols-2 lg:py-40">
+    <div class="up">
+      <span class="kicker text-lgold">Réserver</span>
+      <h2 class="mt-5 font-serif text-5xl font-light leading-[1.05] lg:text-6xl">Reserve o seu<br><span class="italic goldtext">salon de thé</span></h2>
+      <p class="mt-8 max-w-md text-[15px] leading-[2] text-ivory/60">
+        Servimos chá das 14h às 18h, com carrinho de pâtisserie e seleção de dezoito chás
+        da casa Mariage Frères. Mesas para até seis pessoas.
+      </p>
+
+      <dl class="mt-12 space-y-5 border-t border-ivory/12 pt-8 text-[14px]">
+        <div class="flex justify-between"><dt class="text-ivory/45">Endereço</dt><dd class="text-right">Rua Oscar Freire, 1923 — Jardins</dd></div>
+        <div class="flex justify-between"><dt class="text-ivory/45">Telefone</dt><dd>(11) 3064-1923</dd></div>
+        <div class="flex justify-between"><dt class="text-ivory/45">Boulangerie</dt><dd>Ter–Dom · 07h — 20h</dd></div>
+        <div class="flex justify-between"><dt class="text-ivory/45">Salon de thé</dt><dd>Ter–Dom · 14h — 18h</dd></div>
+      </dl>
+    </div>
+
+    <form x-data="{ enviado:false }" @submit.prevent="enviado=true" class="up border border-ivory/12 bg-ivory/[.04] p-9 backdrop-blur-xs lg:p-12">
+      <template x-if="!enviado">
+        <div class="space-y-7">
+          <div>
+            <label class="kicker text-ivory/40">Nome completo</label>
+            <input required type="text" class="mt-3 w-full border-b border-ivory/20 bg-transparent pb-3 text-[15px] outline-none transition focus:border-lgold">
+          </div>
+          <div class="grid gap-7 sm:grid-cols-2">
+            <div>
+              <label class="kicker text-ivory/40">Data</label>
+              <input required type="date" class="mt-3 w-full border-b border-ivory/20 bg-transparent pb-3 text-[15px] text-ivory outline-none transition [color-scheme:dark] focus:border-lgold">
+            </div>
+            <div>
+              <label class="kicker text-ivory/40">Pessoas</label>
+              <select class="mt-3 w-full border-b border-ivory/20 bg-transparent pb-3 text-[15px] outline-none transition focus:border-lgold">
+                <option class="bg-ink">2 pessoas</option><option class="bg-ink">3 pessoas</option>
+                <option class="bg-ink">4 pessoas</option><option class="bg-ink">6 pessoas</option>
+              </select>
+            </div>
+          </div>
+          <div>
+            <label class="kicker text-ivory/40">Telefone</label>
+            <input required type="tel" class="mt-3 w-full border-b border-ivory/20 bg-transparent pb-3 text-[15px] outline-none transition focus:border-lgold">
+          </div>
+          <div>
+            <label class="kicker text-ivory/40">Observação</label>
+            <textarea rows="2" class="mt-3 w-full resize-none border-b border-ivory/20 bg-transparent pb-3 text-[15px] outline-none transition focus:border-lgold"></textarea>
+          </div>
+          <button class="group relative w-full overflow-hidden border border-lgold py-4 text-[11px] uppercase tracking-[.28em] text-lgold">
+            <span class="relative z-10 transition-colors duration-500 group-hover:text-ink">Confirmar reserva</span>
+            <span class="absolute inset-0 origin-left scale-x-0 bg-lgold transition-transform duration-500 group-hover:scale-x-100"></span>
+          </button>
+        </div>
+      </template>
+      <template x-if="enviado">
+        <div class="py-16 text-center">
+          <p class="font-serif text-4xl italic text-lgold">Merci.</p>
+          <p class="mt-5 text-[15px] leading-relaxed text-ivory/60">Sua reserva foi recebida.<br>Confirmamos por telefone em até duas horas.</p>
+        </div>
+      </template>
+    </form>
+  </div>
+</section>
+
+<!-- ========= FOOTER ========= -->
+<footer class="mx-auto max-w-[1400px] px-7 py-20">
+  <div class="up flex flex-col items-center text-center">
+    <span class="font-serif text-4xl">Maison Dorée</span>
+    <span class="mt-2 kicker text-gold">Paris 1923 · São Paulo 1998</span>
+    <div class="my-10 hairline w-full max-w-md"></div>
+    <nav class="flex flex-wrap justify-center gap-x-9 gap-y-3 text-[11px] uppercase tracking-[.24em] text-graphite/60">
+      <a href="#collection" class="transition hover:text-gold">Collection</a>
+      <a href="#maison" class="transition hover:text-gold">La Maison</a>
+      <a href="#galerie" class="transition hover:text-gold">Galerie</a>
+      <a href="#reserver" class="transition hover:text-gold">Réserver</a>
+      <a href="#" class="transition hover:text-gold">Instagram</a>
+      <a href="#" class="transition hover:text-gold">Presse</a>
+    </nav>
+    <p class="mt-10 text-[11px] tracking-[.14em] text-graphite/35">© 2026 Maison Dorée — Tous droits réservés</p>
+  </div>
+</footer>
+
+<script>
+  const obs = new IntersectionObserver(e=>e.forEach(x=>x.isIntersecting&&x.target.classList.add('in')),{threshold:.1});
+  document.querySelectorAll('.up').forEach(el=>obs.observe(el));
+</script>
+</body>
+</html>

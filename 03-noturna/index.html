@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NOTURNA — Padaria 24 horas</title>
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.14.1/dist/cdn.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
+<style type="text/tailwindcss">
+@import "tailwindcss";
+
+@theme {
+  --color-void:   #08080A;
+  --color-night:  #0E0E12;
+  --color-slate2: #17171D;
+  --color-line:   #26262F;
+  --color-amber1: #FFB347;
+  --color-amber2: #FF8A3D;
+  --color-copper: #C2703C;
+  --color-mist:   #A7A7B4;
+
+  --font-grotesk: "Space Grotesk", system-ui, sans-serif;
+  --font-sans:    Inter, system-ui, sans-serif;
+
+  --shadow-glow:  0 0 60px -12px rgba(255,179,71,.45);
+  --shadow-glow2: 0 0 120px -20px rgba(255,138,61,.35);
+}
+
+@layer base {
+  html{scroll-behavior:smooth;scroll-padding-top:6.5rem}
+  body{background:#08080A}
+  /* o v4 removeu o cursor:pointer padrão dos botões */
+  button:not(:disabled),[role="button"]:not(:disabled){cursor:pointer}
+}
+
+@layer components {
+  /* background-color separado do image: o atalho `background` zerava a base escura */
+  .mesh{
+    background-color:#08080A;
+    background-image:
+     radial-gradient(60% 60% at 15% 10%, rgba(255,138,61,.16), transparent 60%),
+     radial-gradient(50% 50% at 85% 30%, rgba(255,179,71,.11), transparent 60%),
+     radial-gradient(70% 70% at 50% 100%, rgba(194,112,60,.13), transparent 65%);
+    background-attachment:fixed;
+  }
+  .grid-lines{background-image:linear-gradient(rgba(255,255,255,.028) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.028) 1px,transparent 1px);background-size:64px 64px}
+  .card{background:linear-gradient(160deg,rgba(255,255,255,.055),rgba(255,255,255,.012));border:1px solid rgba(255,255,255,.075);backdrop-filter:blur(14px)}
+  .card:hover{border-color:rgba(255,179,71,.4)}
+  .flame{background:linear-gradient(92deg,#FFD9A0,#FFB347 40%,#FF8A3D);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .noscroll::-webkit-scrollbar{display:none}
+  .noscroll{scrollbar-width:none}
+  .tick{animation:tick 1.6s ease-in-out infinite}
+}
+
+@keyframes tick{0%,100%{opacity:1}50%{opacity:.25}}
+@keyframes run{to{transform:translateX(-50%)}}
+[x-cloak]{display:none!important}
+</style>
+</head>
+<body class="mesh font-sans text-white antialiased selection:bg-amber1 selection:text-void"
+      x-data="loja()">
+
+<!-- =============== NAV =============== -->
+<header class="fixed inset-x-0 top-0 z-50">
+  <div class="mx-auto mt-4 max-w-7xl px-4">
+    <div class="card flex items-center justify-between rounded-2xl px-5 py-3.5">
+      <a href="#" class="flex items-center gap-3">
+        <span class="relative grid h-10 w-10 place-items-center rounded-xl bg-linear-to-br from-amber1 to-amber2 font-grotesk text-lg font-bold text-void shadow-glow">N</span>
+        <span class="font-grotesk text-lg font-semibold tracking-tight">NOTURNA<span class="ml-1.5 align-super text-[9px] font-normal tracking-[.25em] text-amber1">24H</span></span>
+      </a>
+
+      <nav class="hidden items-center gap-1 md:flex">
+        <a href="#cardapio" class="rounded-lg px-4 py-2 text-sm text-mist transition hover:bg-white/5 hover:text-white">Cardápio</a>
+        <a href="#horario" class="rounded-lg px-4 py-2 text-sm text-mist transition hover:bg-white/5 hover:text-white">Horários</a>
+        <a href="#assinatura" class="rounded-lg px-4 py-2 text-sm text-mist transition hover:bg-white/5 hover:text-white">Assinatura</a>
+        <a href="#faq" class="rounded-lg px-4 py-2 text-sm text-mist transition hover:bg-white/5 hover:text-white">Dúvidas</a>
+      </nav>
+
+      <div class="flex items-center gap-2">
+        <div class="hidden items-center gap-2 rounded-lg border border-line px-3 py-2 sm:flex">
+          <span class="tick h-1.5 w-1.5 rounded-full bg-amber1"></span>
+          <span class="font-grotesk text-sm tabular-nums" x-text="relogio"></span>
+        </div>
+        <button @click="carrinhoAberto=true" class="relative grid h-10 w-10 place-items-center rounded-xl bg-white/6 transition hover:bg-white/12">
+          <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 4h2l2.4 11.2a2 2 0 002 1.6h7.6a2 2 0 002-1.6L21 8H6"/><circle cx="10" cy="20" r="1.3"/><circle cx="17" cy="20" r="1.3"/></svg>
+          <span x-cloak x-show="totalItens>0" x-transition class="absolute -right-1 -top-1 grid h-5 min-w-5 place-items-center rounded-full bg-amber1 px-1 text-[11px] font-bold text-void" x-text="totalItens"></span>
+        </button>
+        <button @click="menuAberto=!menuAberto" class="grid h-10 w-10 place-items-center rounded-xl bg-white/6 md:hidden">
+          <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24"><path stroke-linecap="round" d="M4 7h16M4 12h16M4 17h16"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div x-cloak x-show="menuAberto" x-collapse class="card mt-2 rounded-2xl p-3 md:hidden">
+      <a @click="menuAberto=false" href="#cardapio" class="block rounded-lg px-4 py-3 text-mist hover:bg-white/5">Cardápio</a>
+      <a @click="menuAberto=false" href="#horario" class="block rounded-lg px-4 py-3 text-mist hover:bg-white/5">Horários</a>
+      <a @click="menuAberto=false" href="#assinatura" class="block rounded-lg px-4 py-3 text-mist hover:bg-white/5">Assinatura</a>
+      <a @click="menuAberto=false" href="#faq" class="block rounded-lg px-4 py-3 text-mist hover:bg-white/5">Dúvidas</a>
+    </div>
+  </div>
+</header>
+
+<!-- =============== HERO =============== -->
+<section class="grid-lines relative overflow-hidden pt-40 pb-24 lg:pt-52 lg:pb-32">
+  <div class="pointer-events-none absolute left-1/2 top-0 h-[520px] w-[900px] -translate-x-1/2 rounded-full bg-amber2/12 blur-[130px]"></div>
+
+  <div class="relative mx-auto max-w-7xl px-6 text-center">
+    <div class="mx-auto mb-9 inline-flex items-center gap-3 rounded-full border border-line bg-white/4 px-5 py-2.5 backdrop-blur-sm">
+      <span class="tick h-2 w-2 rounded-full bg-green-400 shadow-[0_0_10px_2px_rgba(74,222,128,.7)]"></span>
+      <span class="text-[13px] text-mist">Fornada saindo agora · <span class="text-white" x-text="proximaFornada"></span></span>
+    </div>
+
+    <h1 class="font-grotesk text-[2.4rem] font-bold leading-[.92] tracking-tighter min-[400px]:text-[3rem] sm:text-7xl md:text-8xl lg:text-[8.5rem]">
+      PÃO QUENTE<br><span class="flame">ÀS 3 DA MANHÃ</span>
+    </h1>
+
+    <p class="mx-auto mt-9 max-w-xl text-lg leading-relaxed text-mist">
+      A única padaria que nunca apaga o forno. Assamos de hora em hora, 24 horas por dia,
+      365 dias por ano — porque fome não tem horário comercial.
+    </p>
+
+    <div class="mt-12 flex flex-wrap justify-center gap-4">
+      <a href="#cardapio" class="group relative overflow-hidden rounded-2xl bg-linear-to-r from-amber1 to-amber2 px-9 py-4 font-grotesk font-semibold text-void shadow-glow transition-transform hover:scale-[1.03]">
+        <span class="relative z-10">Pedir agora</span>
+      </a>
+      <a href="#assinatura" class="rounded-2xl border border-line bg-white/4 px-9 py-4 font-grotesk font-medium backdrop-blur-sm transition hover:border-amber1/50 hover:bg-white/8">Ver assinaturas</a>
+    </div>
+
+    <div class="mx-auto mt-20 grid max-w-4xl grid-cols-2 gap-4 sm:grid-cols-4">
+      <div class="card rounded-2xl p-5"><p class="font-grotesk text-3xl text-amber1">24</p><p class="mt-1 text-xs text-mist">fornadas por dia</p></div>
+      <div class="card rounded-2xl p-5"><p class="font-grotesk text-3xl text-amber1">18<span class="text-lg">min</span></p><p class="mt-1 text-xs text-mist">entrega média</p></div>
+      <div class="card rounded-2xl p-5"><p class="font-grotesk text-3xl text-amber1">4,9</p><p class="mt-1 text-xs text-mist">★ em 12 mil avaliações</p></div>
+      <div class="card rounded-2xl p-5"><p class="font-grotesk text-3xl text-amber1">0</p><p class="mt-1 text-xs text-mist">dias fechado desde 2019</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- =============== TICKER =============== -->
+<div class="overflow-hidden border-y border-line bg-night py-3.5">
+  <div class="flex w-max animate-[run_30s_linear_infinite] whitespace-nowrap font-grotesk text-sm uppercase tracking-widest text-mist">
+    <template x-for="i in 2">
+      <div class="flex gap-8 pr-8">
+        <span>00h — pão francês</span><span class="text-amber1">/</span>
+        <span>02h — brioche de manteiga</span><span class="text-amber1">/</span>
+        <span>04h — sonho de doce de leite</span><span class="text-amber1">/</span>
+        <span>06h — croissant</span><span class="text-amber1">/</span>
+        <span>10h — focaccia</span><span class="text-amber1">/</span>
+        <span>14h — pão de queijo</span><span class="text-amber1">/</span>
+        <span>19h — pizza de forno</span><span class="text-amber1">/</span>
+        <span>22h — cookie recheado</span><span class="text-amber1">/</span>
+      </div>
+    </template>
+  </div>
+</div>
+
+<!-- =============== BENTO =============== -->
+<section class="mx-auto max-w-7xl px-6 py-28">
+  <div class="mb-14 flex flex-wrap items-end justify-between gap-6">
+    <h2 class="max-w-lg font-grotesk text-4xl font-bold leading-tight tracking-tight sm:text-5xl">
+      Tudo saindo do forno <span class="flame">enquanto a cidade dorme</span>
+    </h2>
+    <p class="max-w-xs text-mist">Cinco fornos a lastro girando em turnos. A produção nunca para.</p>
+  </div>
+
+  <div class="grid gap-4 md:grid-cols-3 md:grid-rows-2 lg:h-[620px]">
+    <div class="group relative overflow-hidden rounded-3xl md:col-span-2 md:row-span-2">
+      <img src="https://images.unsplash.com/photo-1517433670267-08bbd4be890f?auto=format&fit=crop&w=1400&q=80" alt="Interior da padaria à noite" class="h-full min-h-[320px] w-full object-cover transition-transform duration-[1400ms] group-hover:scale-105">
+      <div class="absolute inset-0 bg-linear-to-t from-void via-void/40 to-transparent"></div>
+      <div class="absolute bottom-0 left-0 right-0 p-8 lg:p-10">
+        <span class="rounded-full border border-amber1/40 bg-amber1/10 px-3 py-1.5 text-[11px] font-medium uppercase tracking-wider text-amber1">Turno da madrugada</span>
+        <h3 class="mt-5 font-grotesk text-3xl font-bold lg:text-4xl">O forno nº 3 não apaga desde 2019</h3>
+        <p class="mt-3 max-w-md text-mist">Seis padeiros revezando em turnos de oito horas. Uma fornada nova a cada sessenta minutos, sem exceção.</p>
+      </div>
+    </div>
+
+    <div class="card flex flex-col justify-between rounded-3xl p-7">
+      <div class="grid h-12 w-12 place-items-center rounded-xl bg-amber1/12 text-amber1">
+        <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" d="M12 7v5l3 2"/><circle cx="12" cy="12" r="9"/></svg>
+      </div>
+      <div class="mt-8">
+        <h3 class="font-grotesk text-xl font-semibold">Entrega em 18 minutos</h3>
+        <p class="mt-2 text-sm leading-relaxed text-mist">Raio de 6 km, com bolsa térmica. Chega quente ou é por nossa conta.</p>
+      </div>
+    </div>
+
+    <div class="group relative overflow-hidden rounded-3xl">
+      <img src="https://images.unsplash.com/photo-1600271886742-f049cd451bba?auto=format&fit=crop&w=900&q=80" alt="Rolinhos de canela" class="h-full min-h-[240px] w-full object-cover transition-transform duration-[1400ms] group-hover:scale-110">
+      <div class="absolute inset-0 bg-linear-to-t from-void/90 to-transparent"></div>
+      <div class="absolute bottom-6 left-6">
+        <p class="font-grotesk text-xl font-semibold">Doces da madrugada</p>
+        <p class="text-sm text-amber1">a partir de R$ 12</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =============== CARDÁPIO =============== -->
+<section id="cardapio" class="mx-auto max-w-7xl px-6 pb-28">
+  <div class="mb-12 flex flex-wrap items-end justify-between gap-6">
+    <div>
+      <p class="mb-3 text-sm uppercase tracking-[.3em] text-amber1">Cardápio</p>
+      <h2 class="font-grotesk text-4xl font-bold tracking-tight sm:text-5xl">Monte seu pedido</h2>
+    </div>
+    <div class="flex flex-wrap gap-2">
+      <template x-for="c in categorias" :key="c">
+        <button @click="filtro=c"
+                :class="filtro===c ? 'border-amber1 bg-amber1 text-void' : 'border-line text-mist hover:border-amber1/50 hover:text-white'"
+                class="rounded-xl border px-5 py-2.5 text-sm font-medium transition-all" x-text="c"></button>
+      </template>
+    </div>
+  </div>
+
+  <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+    <template x-for="p in produtosFiltrados" :key="p.id">
+      <article class="card group overflow-hidden rounded-3xl transition-all duration-500 hover:shadow-glow2">
+        <div class="relative overflow-hidden">
+          <img :src="p.img" :alt="p.nome" class="h-52 w-full object-cover transition-transform duration-[1200ms] group-hover:scale-110">
+          <div class="absolute inset-0 bg-linear-to-t from-night/95 via-night/20 to-transparent"></div>
+          <span class="absolute right-4 top-4 rounded-lg border border-line bg-void/70 px-3 py-1.5 text-[11px] backdrop-blur-sm" x-text="p.hora"></span>
+        </div>
+        <div class="p-6">
+          <div class="flex items-start justify-between gap-4">
+            <div>
+              <h3 class="font-grotesk text-lg font-semibold" x-text="p.nome"></h3>
+              <p class="mt-1.5 text-sm leading-relaxed text-mist" x-text="p.desc"></p>
+            </div>
+            <span class="shrink-0 font-grotesk text-lg text-amber1" x-text="'R$ '+p.preco.toFixed(2).replace('.',',')"></span>
+          </div>
+          <button @click="adicionar(p)"
+                  class="mt-6 w-full rounded-xl border border-line bg-white/4 py-3 text-sm font-medium transition-all hover:border-amber1 hover:bg-amber1 hover:text-void">
+            Adicionar ao carrinho
+          </button>
+        </div>
+      </article>
+    </template>
+  </div>
+</section>
+
+<!-- =============== HORÁRIO =============== -->
+<section id="horario" class="border-y border-line bg-night">
+  <div class="mx-auto grid max-w-7xl gap-14 px-6 py-24 lg:grid-cols-2 lg:items-center">
+    <div>
+      <p class="mb-3 text-sm uppercase tracking-[.3em] text-amber1">Grade de fornadas</p>
+      <h2 class="font-grotesk text-4xl font-bold leading-tight tracking-tight sm:text-5xl">Você sabe exatamente<br>o que vai encontrar</h2>
+      <p class="mt-6 max-w-md leading-relaxed text-mist">
+        Cada hora do dia tem sua fornada fixa. Chegou às 3h da manhã? Tem sonho quentinho.
+        Às 6h? Croissant folhado. A grade é pública e nunca muda.
+      </p>
+      <div class="mt-9 flex items-center gap-4 rounded-2xl border border-amber1/25 bg-amber1/8 p-5">
+        <div class="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-amber1 text-void">
+          <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M13 3L4 14h7l-1 7 9-11h-7l1-7z"/></svg>
+        </div>
+        <div>
+          <p class="font-grotesk font-semibold">Agora é <span x-text="relogio"></span></p>
+          <p class="text-sm text-mist" x-text="'Próxima fornada: '+proximaFornada"></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="noscroll max-h-[420px] space-y-2.5 overflow-y-auto pr-2">
+      <template x-for="g in grade" :key="g.h">
+        <div :class="g.h===horaAtual ? 'border-amber1 bg-amber1/10' : 'border-line bg-white/3'"
+             class="flex items-center gap-5 rounded-2xl border p-4 transition-colors">
+          <span :class="g.h===horaAtual ? 'text-amber1' : 'text-mist'" class="w-16 shrink-0 font-grotesk text-lg tabular-nums" x-text="g.h+'h'"></span>
+          <span class="h-8 w-px bg-line"></span>
+          <span class="flex-1 text-sm" x-text="g.item"></span>
+          <span x-show="g.h===horaAtual" class="tick rounded-full bg-amber1 px-2.5 py-1 text-[10px] font-bold uppercase text-void">agora</span>
+        </div>
+      </template>
+    </div>
+  </div>
+</section>
+
+<!-- =============== ASSINATURA =============== -->
+<section id="assinatura" class="mx-auto max-w-7xl px-6 py-28">
+  <div class="mx-auto max-w-2xl text-center">
+    <p class="mb-3 text-sm uppercase tracking-[.3em] text-amber1">Assinatura</p>
+    <h2 class="font-grotesk text-4xl font-bold tracking-tight sm:text-5xl">Pão fresco na porta,<br>todo santo dia</h2>
+    <p class="mt-5 text-mist">Cancele quando quiser. Pule as semanas que quiser. Sem multa, sem fidelidade.</p>
+  </div>
+
+  <div class="mt-16 grid gap-6 lg:grid-cols-3">
+    <template x-for="pl in planos" :key="pl.nome">
+      <div :class="pl.destaque ? 'border-amber1 shadow-glow2' : 'border-white/8 hover:border-amber1/40'"
+           class="card relative flex flex-col rounded-3xl border p-8">
+        <span x-show="pl.destaque" class="absolute -top-3 left-8 rounded-full bg-linear-to-r from-amber1 to-amber2 px-4 py-1.5 text-[11px] font-bold uppercase tracking-wider text-void">Mais pedido</span>
+        <h3 class="font-grotesk text-xl font-semibold" x-text="pl.nome"></h3>
+        <p class="mt-2 text-sm text-mist" x-text="pl.sub"></p>
+        <div class="mt-7 flex items-end gap-1.5">
+          <span class="font-grotesk text-5xl font-bold" x-text="'R$'+pl.preco"></span>
+          <span class="pb-2 text-mist">/mês</span>
+        </div>
+        <ul class="mt-8 flex-1 space-y-3.5 text-sm">
+          <template x-for="b in pl.itens" :key="b">
+            <li class="flex items-start gap-3">
+              <svg class="mt-0.5 h-4 w-4 shrink-0 text-amber1" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+              <span class="text-mist" x-text="b"></span>
+            </li>
+          </template>
+        </ul>
+        <button :class="pl.destaque ? 'bg-linear-to-r from-amber1 to-amber2 text-void hover:scale-[1.02]' : 'border border-line bg-white/4 hover:border-amber1/60 hover:bg-white/8'"
+                class="mt-9 rounded-xl py-3.5 font-grotesk font-semibold transition-all">Assinar</button>
+      </div>
+    </template>
+  </div>
+</section>
+
+<!-- =============== FAQ =============== -->
+<section id="faq" class="mx-auto max-w-3xl px-6 pb-28" x-data="{ aberto:0 }">
+  <div class="mb-12 text-center">
+    <p class="mb-3 text-sm uppercase tracking-[.3em] text-amber1">Dúvidas</p>
+    <h2 class="font-grotesk text-4xl font-bold tracking-tight sm:text-5xl">Perguntas frequentes</h2>
+  </div>
+  <template x-for="(f,i) in faq" :key="i">
+    <div class="card mb-3 overflow-hidden rounded-2xl">
+      <button @click="aberto = aberto===i ? null : i" class="flex w-full items-center justify-between gap-6 p-6 text-left">
+        <span class="font-grotesk font-medium" x-text="f.q"></span>
+        <svg :class="aberto===i ? 'rotate-45 text-amber1' : 'text-mist'" class="h-5 w-5 shrink-0 transition-transform duration-300" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" d="M12 5v14M5 12h14"/></svg>
+      </button>
+      <div x-show="aberto===i" x-collapse>
+        <p class="px-6 pb-6 leading-relaxed text-mist" x-text="f.a"></p>
+      </div>
+    </div>
+  </template>
+</section>
+
+<!-- =============== CTA =============== -->
+<section class="relative overflow-hidden border-y border-line">
+  <img src="https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=1800&q=80" alt="" class="absolute inset-0 h-full w-full object-cover opacity-[.13]">
+  <div class="relative mx-auto max-w-3xl px-6 py-24 text-center">
+    <h2 class="font-grotesk text-4xl font-bold leading-tight tracking-tight sm:text-6xl">Está com fome<br><span class="flame">agora mesmo?</span></h2>
+    <p class="mx-auto mt-6 max-w-md text-mist">Estamos abertos. Sempre estamos. Peça e receba em 18 minutos.</p>
+    <a href="#cardapio" class="mt-10 inline-block rounded-2xl bg-linear-to-r from-amber1 to-amber2 px-10 py-4 font-grotesk font-bold text-void shadow-glow transition-transform hover:scale-105">Fazer pedido</a>
+  </div>
+</section>
+
+<!-- =============== FOOTER =============== -->
+<footer class="mx-auto max-w-7xl px-6 py-16">
+  <div class="grid gap-10 md:grid-cols-4">
+    <div class="md:col-span-2">
+      <div class="flex items-center gap-3">
+        <span class="grid h-10 w-10 place-items-center rounded-xl bg-linear-to-br from-amber1 to-amber2 font-grotesk font-bold text-void">N</span>
+        <span class="font-grotesk text-lg font-semibold">NOTURNA <span class="text-[9px] align-super tracking-[.25em] text-amber1">24H</span></span>
+      </div>
+      <p class="mt-5 max-w-sm text-sm leading-relaxed text-mist">Av. Rebouças, 2440 — Pinheiros, São Paulo. Aberto vinte e quatro horas, todos os dias do ano.</p>
+      <p class="mt-4 font-grotesk text-amber1">(11) 4002-8922</p>
+    </div>
+    <div>
+      <p class="mb-4 font-grotesk text-sm font-semibold">Navegar</p>
+      <ul class="space-y-2.5 text-sm text-mist">
+        <li><a href="#cardapio" class="transition hover:text-amber1">Cardápio</a></li>
+        <li><a href="#horario" class="transition hover:text-amber1">Grade de fornadas</a></li>
+        <li><a href="#assinatura" class="transition hover:text-amber1">Assinaturas</a></li>
+        <li><a href="#faq" class="transition hover:text-amber1">Dúvidas</a></li>
+      </ul>
+    </div>
+    <div>
+      <p class="mb-4 font-grotesk text-sm font-semibold">Pedidos</p>
+      <ul class="space-y-2.5 text-sm text-mist">
+        <li><a href="#" class="transition hover:text-amber1">WhatsApp</a></li>
+        <li><a href="#" class="transition hover:text-amber1">iFood</a></li>
+        <li><a href="#" class="transition hover:text-amber1">Retirada no balcão</a></li>
+        <li><a href="#" class="transition hover:text-amber1">Corporativo</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="mt-14 flex flex-col items-center justify-between gap-3 border-t border-line pt-7 text-xs text-mist sm:flex-row">
+    <p>© 2026 Noturna Padaria 24h</p>
+    <p>O forno nº 3 está aceso há <span class="text-amber1">2.487</span> dias.</p>
+  </div>
+</footer>
+
+<!-- =============== CARRINHO (drawer) =============== -->
+<div x-cloak x-show="carrinhoAberto" class="fixed inset-0 z-[70]">
+  <div x-show="carrinhoAberto" x-transition.opacity @click="carrinhoAberto=false" class="absolute inset-0 bg-void/80 backdrop-blur-xs"></div>
+  <aside x-show="carrinhoAberto"
+         x-transition:enter="transition duration-500 ease-out" x-transition:enter-start="translate-x-full" x-transition:enter-end="translate-x-0"
+         x-transition:leave="transition duration-300 ease-in" x-transition:leave-start="translate-x-0" x-transition:leave-end="translate-x-full"
+         class="absolute right-0 top-0 flex h-full w-full max-w-md flex-col border-l border-line bg-night">
+    <div class="flex items-center justify-between border-b border-line p-6">
+      <h3 class="font-grotesk text-xl font-semibold">Seu pedido</h3>
+      <button @click="carrinhoAberto=false" class="grid h-9 w-9 place-items-center rounded-lg bg-white/6 transition hover:bg-white/12">
+        <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+    </div>
+
+    <div class="flex-1 overflow-y-auto p-6">
+      <template x-if="carrinho.length===0">
+        <div class="flex h-full flex-col items-center justify-center text-center">
+          <div class="grid h-16 w-16 place-items-center rounded-2xl bg-white/5 text-mist">
+            <svg class="h-8 w-8" fill="none" stroke="currentColor" stroke-width="1.3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 4h2l2.4 11.2a2 2 0 002 1.6h7.6a2 2 0 002-1.6L21 8H6"/></svg>
+          </div>
+          <p class="mt-5 text-mist">Seu carrinho está vazio</p>
+          <button @click="carrinhoAberto=false" class="mt-5 text-sm text-amber1 underline underline-offset-4">Ver o cardápio</button>
+        </div>
+      </template>
+
+      <template x-for="item in carrinho" :key="item.id">
+        <div class="mb-3 flex gap-4 rounded-2xl border border-line bg-white/3 p-3.5">
+          <img :src="item.img" :alt="item.nome" class="h-20 w-20 shrink-0 rounded-xl object-cover">
+          <div class="flex-1">
+            <p class="font-grotesk font-medium leading-tight" x-text="item.nome"></p>
+            <p class="mt-1 text-sm text-amber1" x-text="'R$ '+item.preco.toFixed(2).replace('.',',')"></p>
+            <div class="mt-3 flex items-center gap-3">
+              <button @click="mudarQtd(item,-1)" class="grid h-7 w-7 place-items-center rounded-lg bg-white/8 transition hover:bg-white/16">−</button>
+              <span class="w-5 text-center tabular-nums" x-text="item.qtd"></span>
+              <button @click="mudarQtd(item,1)" class="grid h-7 w-7 place-items-center rounded-lg bg-white/8 transition hover:bg-white/16">+</button>
+              <button @click="remover(item)" class="ml-auto text-xs text-mist transition hover:text-red-400">remover</button>
+            </div>
+          </div>
+        </div>
+      </template>
+    </div>
+
+    <div x-show="carrinho.length>0" class="border-t border-line p-6">
+      <div class="mb-2 flex justify-between text-sm text-mist"><span>Subtotal</span><span x-text="'R$ '+total.toFixed(2).replace('.',',')"></span></div>
+      <div class="mb-5 flex justify-between text-sm text-mist"><span>Entrega</span><span class="text-green-400">grátis</span></div>
+      <div class="mb-6 flex justify-between font-grotesk text-xl font-bold"><span>Total</span><span class="text-amber1" x-text="'R$ '+total.toFixed(2).replace('.',',')"></span></div>
+      <button class="w-full rounded-xl bg-linear-to-r from-amber1 to-amber2 py-4 font-grotesk font-bold text-void transition-transform hover:scale-[1.02]">Finalizar pedido</button>
+      <p class="mt-3 text-center text-xs text-mist">Chega em aproximadamente 18 minutos</p>
+    </div>
+  </aside>
+</div>
+
+<script>
+function loja(){
+  return {
+    menuAberto:false, carrinhoAberto:false, carrinho:[], filtro:'Tudo',
+    relogio:'--:--', horaAtual:0, proximaFornada:'',
+    categorias:['Tudo','Pães','Doces','Salgados','Bebidas'],
+    produtos:[
+      {id:1, nome:'Pão Francês',        cat:'Pães',     preco:1.50, hora:'a cada hora', desc:'Casquinha crocante, miolo macio. Vendido por unidade.', img:'https://images.unsplash.com/photo-1549931319-a545dcf3bc73?auto=format&fit=crop&w=800&q=80'},
+      {id:2, nome:'Brioche de Manteiga',cat:'Pães',     preco:22.00, hora:'02h e 14h',   desc:'Massa enriquecida com gemas caipiras e manteiga francesa.', img:'https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=800&q=80'},
+      {id:3, nome:'Sonho de Doce de Leite', cat:'Doces', preco:14.00, hora:'04h e 16h',  desc:'Frito na hora, recheado com doce de leite argentino.', img:'https://images.unsplash.com/photo-1551024506-0bccd828d307?auto=format&fit=crop&w=800&q=80'},
+      {id:4, nome:'Croissant Folhado',  cat:'Doces',    preco:16.00, hora:'06h',         desc:'Vinte e sete camadas, 72 horas de laminação a frio.', img:'https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=800&q=80'},
+      {id:5, nome:'Focaccia de Alecrim',cat:'Salgados', preco:28.00, hora:'10h',         desc:'Azeite extra virgem, tomate confitado e flor de sal.', img:'https://images.unsplash.com/photo-1568254183919-78a4f43a2877?auto=format&fit=crop&w=800&q=80'},
+      {id:6, nome:'Pão de Queijo (6un)',cat:'Salgados', preco:18.00, hora:'a cada 2h',   desc:'Polvilho azedo e queijo canastra meia-cura.', img:'https://images.unsplash.com/photo-1586444248902-2f64eddc13df?auto=format&fit=crop&w=800&q=80'},
+      {id:7, nome:'Cookie Recheado',    cat:'Doces',    preco:19.00, hora:'22h',         desc:'Cento e vinte gramas, recheio de Nutella derretida.', img:'https://images.unsplash.com/photo-1499636136210-6f4ee915583e?auto=format&fit=crop&w=800&q=80'},
+      {id:8, nome:'Café Coado 300ml',   cat:'Bebidas',  preco:9.00,  hora:'sempre',      desc:'Grãos do sul de Minas, torra média, moído na hora.', img:'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=800&q=80'},
+      {id:9, nome:'Chocolate Quente',   cat:'Bebidas',  preco:16.00, hora:'sempre',      desc:'Cacau 70% com leite integral e raspas de laranja.', img:'https://images.unsplash.com/photo-1517578239113-b03992dcdd25?auto=format&fit=crop&w=800&q=80'}
+    ],
+    grade:[
+      {h:0,item:'Pão francês + café da virada'},{h:1,item:'Baguete rústica'},
+      {h:2,item:'Brioche de manteiga'},{h:3,item:'Pão de forma integral'},
+      {h:4,item:'Sonho de doce de leite'},{h:5,item:'Pão francês (fornada grande)'},
+      {h:6,item:'Croissant folhado'},{h:7,item:'Pão de queijo'},
+      {h:8,item:'Bolo de fubá cremoso'},{h:9,item:'Pão australiano'},
+      {h:10,item:'Focaccia de alecrim'},{h:11,item:'Ciabatta'},
+      {h:12,item:'Pão francês (almoço)'},{h:13,item:'Esfiha aberta'},
+      {h:14,item:'Pão de queijo + brioche'},{h:15,item:'Torta de frango'},
+      {h:16,item:'Sonho de creme'},{h:17,item:'Pão francês (fim de tarde)'},
+      {h:18,item:'Pão doce trançado'},{h:19,item:'Pizza de forno a lastro'},
+      {h:20,item:'Pão de alho'},{h:21,item:'Cinnamon roll'},
+      {h:22,item:'Cookie recheado'},{h:23,item:'Pão francês da meia-noite'}
+    ],
+    planos:[
+      {nome:'Essencial', sub:'Para quem mora sozinho', preco:'89', destaque:false,
+       itens:['6 pães franceses por dia','Entrega até 7h da manhã','Pausar quando quiser','Sem taxa de entrega']},
+      {nome:'Família', sub:'O mais escolhido da casa', preco:'179', destaque:true,
+       itens:['12 pães franceses por dia','1 pão especial por semana','2 doces aos domingos','Entrega até 7h da manhã','10% off em todo o cardápio','Sem taxa de entrega']},
+      {nome:'Escritório', sub:'Para times de 10 a 40 pessoas', preco:'490', destaque:false,
+       itens:['Cesta variada 3x por semana','Café coado em garrafa térmica','Nota fiscal empresarial','Gerente de conta dedicado','Entrega até 8h']}
+    ],
+    faq:[
+      {q:'Vocês abrem realmente 24 horas?', a:'Sim. Desde a inauguração em 2019 não fechamos um único dia — nem Natal, nem Ano Novo. Nosso forno nº 3 está aceso ininterruptamente há mais de seis anos.'},
+      {q:'Qual o raio de entrega?', a:'Entregamos em um raio de 6 km da loja em Pinheiros, com bolsa térmica. Fora dessa área, atendemos por retirada no balcão ou pelos aplicativos parceiros.'},
+      {q:'Posso pausar minha assinatura?', a:'Pode pausar, pular semanas ou cancelar a qualquer momento pelo painel, sem multa e sem precisar falar com ninguém. A cobrança seguinte simplesmente não acontece.'},
+      {q:'Vocês têm opções sem glúten?', a:'Temos três pães sem glúten produzidos em bancada separada, mas a cozinha não é 100% livre de contaminação cruzada. Sinalize alergia grave no pedido e nossa equipe te orienta.'},
+      {q:'Aceitam encomendas grandes?', a:'Sim, para eventos e empresas. Pedidos acima de 200 unidades precisam de 48 horas de antecedência. Fale com a gente pelo WhatsApp comercial.'}
+    ],
+    get produtosFiltrados(){ return this.filtro==='Tudo' ? this.produtos : this.produtos.filter(p=>p.cat===this.filtro) },
+    get totalItens(){ return this.carrinho.reduce((s,i)=>s+i.qtd,0) },
+    get total(){ return this.carrinho.reduce((s,i)=>s+i.qtd*i.preco,0) },
+    adicionar(p){
+      const ex = this.carrinho.find(i=>i.id===p.id);
+      ex ? ex.qtd++ : this.carrinho.push({...p, qtd:1});
+      this.carrinhoAberto = true;
+    },
+    mudarQtd(i,d){ i.qtd += d; if(i.qtd<1) this.remover(i) },
+    remover(i){ this.carrinho = this.carrinho.filter(x=>x.id!==i.id) },
+    init(){
+      const atualiza = () => {
+        const d = new Date();
+        this.relogio = String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');
+        this.horaAtual = d.getHours();
+        const prox = this.grade[(d.getHours()+1)%24];
+        this.proximaFornada = prox.item + ' às ' + String(prox.h).padStart(2,'0') + 'h';
+      };
+      atualiza(); setInterval(atualiza, 20000);
+    }
+  }
+}
+</script>
+</body>
+</html>

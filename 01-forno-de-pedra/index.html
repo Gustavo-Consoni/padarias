@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Forno de Pedra — Padaria Artesanal desde 1948</title>
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,300;1,9..144,600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
+<style type="text/tailwindcss">
+@import "tailwindcss";
+
+@theme {
+  --color-cream: #F6F0E4;
+  --color-sand:  #EADFC8;
+  --color-crust: #B4703A;
+  --color-ember: #8C3B1B;
+  --color-cocoa: #3B2418;
+  --color-soot:  #1C120C;
+  --color-olive: #6B6B47;
+
+  --font-display: Fraunces, Georgia, serif;
+  --font-sans:    Inter, system-ui, sans-serif;
+}
+
+@layer base {
+  html{scroll-behavior:smooth;scroll-padding-top:5.5rem}
+  body{background:#F6F0E4}
+  /* o v4 removeu o cursor:pointer padrão dos botões */
+  button:not(:disabled),[role="button"]:not(:disabled){cursor:pointer}
+}
+
+@layer components {
+  .grain::before{
+    content:'';position:absolute;inset:0;pointer-events:none;opacity:.35;mix-blend-mode:multiply;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='.4'/%3E%3C/svg%3E");
+  }
+  .rail{scrollbar-width:none;-ms-overflow-style:none}
+  .rail::-webkit-scrollbar{display:none}
+  .reveal{opacity:0;transform:translateY(28px);transition:opacity .9s cubic-bezier(.2,.7,.3,1),transform .9s cubic-bezier(.2,.7,.3,1)}
+  .reveal.on{opacity:1;transform:none}
+  .rule{background-image:linear-gradient(to right,#3B2418 0 6px,transparent 6px 12px);background-size:12px 1px;background-repeat:repeat-x;height:1px}
+}
+
+@keyframes slide{to{transform:translateX(-50%)}}
+[x-cloak]{display:none!important}
+</style>
+</head>
+<body x-data class="font-sans text-cocoa antialiased selection:bg-ember selection:text-cream">
+
+<!-- ============ NAV ============ -->
+<div x-data="{ scrolled:false, open:false }" x-init="window.addEventListener('scroll',()=>scrolled = window.scrollY > 40)">
+  <header :class="scrolled ? 'bg-cream/95 backdrop-blur-md border-cocoa/10 py-3 shadow-[0_1px_0_rgba(59,36,24,.06)]' : 'bg-transparent border-transparent py-6'"
+          class="fixed inset-x-0 top-0 z-50 border-b transition-all duration-500">
+    <div class="mx-auto flex max-w-7xl items-center justify-between px-6">
+      <a href="#" class="flex items-center gap-3">
+        <span :class="scrolled ? 'bg-ember text-cream' : 'bg-cream text-ember'" class="grid h-11 w-11 place-items-center rounded-full font-display text-xl font-bold transition-colors duration-500">F</span>
+        <span :class="scrolled ? 'text-cocoa' : 'text-cream'" class="font-display text-xl leading-none tracking-tight transition-colors duration-500">
+          Forno de Pedra<span class="block font-sans text-[10px] uppercase tracking-[.32em] opacity-60">Padaria artesanal</span>
+        </span>
+      </a>
+
+      <nav :class="scrolled ? 'text-cocoa' : 'text-cream'" class="hidden items-center gap-9 text-[13px] font-medium uppercase tracking-[.18em] transition-colors duration-500 lg:flex">
+        <a href="#fornada" class="relative py-1 after:absolute after:inset-x-0 after:-bottom-0.5 after:h-px after:origin-left after:scale-x-0 after:bg-current after:transition-transform hover:after:scale-x-100">Fornada</a>
+        <a href="#historia" class="relative py-1 after:absolute after:inset-x-0 after:-bottom-0.5 after:h-px after:origin-left after:scale-x-0 after:bg-current after:transition-transform hover:after:scale-x-100">História</a>
+        <a href="#processo" class="relative py-1 after:absolute after:inset-x-0 after:-bottom-0.5 after:h-px after:origin-left after:scale-x-0 after:bg-current after:transition-transform hover:after:scale-x-100">Processo</a>
+        <a href="#visite" class="relative py-1 after:absolute after:inset-x-0 after:-bottom-0.5 after:h-px after:origin-left after:scale-x-0 after:bg-current after:transition-transform hover:after:scale-x-100">Visite</a>
+      </nav>
+
+      <div class="flex items-center gap-3">
+        <a href="#visite" :class="scrolled ? 'bg-ember text-cream hover:bg-cocoa' : 'bg-cream text-cocoa hover:bg-sand'"
+           class="hidden rounded-full px-6 py-3 text-[12px] font-semibold uppercase tracking-[.16em] transition-colors duration-300 sm:inline-block">Encomendar</a>
+        <button @click="open=true" :class="scrolled ? 'text-cocoa' : 'text-cream'" class="lg:hidden" aria-label="Menu">
+          <svg class="h-7 w-7" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" d="M3.75 7h16.5M3.75 12h16.5M3.75 17h16.5"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- mobile drawer -->
+  <div x-cloak x-show="open" class="fixed inset-0 z-[60]">
+    <div x-show="open" x-transition.opacity @click="open=false" class="absolute inset-0 bg-soot/60"></div>
+    <div x-show="open" x-transition:enter="transition duration-500" x-transition:enter-start="translate-x-full" x-transition:enter-end="translate-x-0"
+         x-transition:leave="transition duration-300" x-transition:leave-start="translate-x-0" x-transition:leave-end="translate-x-full"
+         class="absolute right-0 top-0 flex h-full w-[82%] max-w-sm flex-col bg-cream p-8">
+      <button @click="open=false" class="self-end text-cocoa"><svg class="h-7 w-7" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" d="M6 6l12 12M18 6L6 18"/></svg></button>
+      <nav class="mt-12 flex flex-col gap-2 font-display text-4xl">
+        <a @click="open=false" href="#fornada" class="border-b border-cocoa/10 py-4">Fornada</a>
+        <a @click="open=false" href="#historia" class="border-b border-cocoa/10 py-4">História</a>
+        <a @click="open=false" href="#processo" class="border-b border-cocoa/10 py-4">Processo</a>
+        <a @click="open=false" href="#visite" class="border-b border-cocoa/10 py-4">Visite</a>
+      </nav>
+      <a href="#visite" @click="open=false" class="mt-auto rounded-full bg-ember px-6 py-4 text-center text-xs font-semibold uppercase tracking-[.2em] text-cream">Encomendar</a>
+    </div>
+  </div>
+</div>
+
+<!-- ============ HERO ============ -->
+<section class="grain relative flex min-h-screen items-end overflow-hidden">
+  <img src="https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=2000&q=80" alt="Pães artesanais saindo do forno" class="absolute inset-0 h-full w-full object-cover">
+  <div class="absolute inset-0 bg-linear-to-t from-soot via-soot/55 to-soot/25"></div>
+
+  <div class="relative mx-auto w-full max-w-7xl px-6 pb-20 pt-40">
+    <div class="max-w-3xl">
+      <p class="mb-7 inline-flex items-center gap-3 rounded-full border border-cream/25 bg-cream/5 px-4 py-2 text-[11px] uppercase tracking-[.3em] text-cream/80 backdrop-blur-xs">
+        <span class="h-1.5 w-1.5 rounded-full bg-crust"></span> Desde 1948 · Vila Madalena
+      </p>
+      <h1 class="font-display text-[3.4rem] font-light leading-[.95] text-cream sm:text-7xl lg:text-8xl">
+        O pão volta<br>a ter <em class="font-semibold italic text-crust">tempo</em>.
+      </h1>
+      <p class="mt-8 max-w-lg text-lg leading-relaxed text-cream/70">
+        Fermentação natural de 24 horas, farinha moída em pedra e um forno a lenha
+        que não apaga desde a segunda geração da família.
+      </p>
+      <div class="mt-11 flex flex-wrap items-center gap-4">
+        <a href="#fornada" class="group inline-flex items-center gap-3 rounded-full bg-cream px-8 py-4 text-[12px] font-semibold uppercase tracking-[.18em] text-cocoa transition-colors hover:bg-crust hover:text-cream">
+          Ver a fornada de hoje
+          <svg class="h-4 w-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" d="M5 12h14m-6-6l6 6-6 6"/></svg>
+        </a>
+        <a href="#historia" class="inline-flex items-center gap-3 rounded-full border border-cream/30 px-8 py-4 text-[12px] font-semibold uppercase tracking-[.18em] text-cream transition-colors hover:bg-cream/10">Nossa história</a>
+      </div>
+    </div>
+
+    <div class="mt-20 grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-cream/15 bg-cream/10 backdrop-blur-md sm:grid-cols-4">
+      <div class="bg-soot/40 p-6"><p class="font-display text-4xl text-cream">77</p><p class="mt-1 text-[11px] uppercase tracking-[.2em] text-cream/55">anos de forno</p></div>
+      <div class="bg-soot/40 p-6"><p class="font-display text-4xl text-cream">24<span class="text-crust">h</span></p><p class="mt-1 text-[11px] uppercase tracking-[.2em] text-cream/55">de fermentação</p></div>
+      <div class="bg-soot/40 p-6"><p class="font-display text-4xl text-cream">04</p><p class="mt-1 text-[11px] uppercase tracking-[.2em] text-cream/55">ingredientes</p></div>
+      <div class="bg-soot/40 p-6"><p class="font-display text-4xl text-cream">05<span class="text-crust">h</span></p><p class="mt-1 text-[11px] uppercase tracking-[.2em] text-cream/55">primeira fornada</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ MARQUEE ============ -->
+<div class="overflow-hidden border-y border-cocoa/10 bg-sand py-4">
+  <div class="flex w-max animate-[slide_38s_linear_infinite] items-center whitespace-nowrap font-display text-lg text-cocoa/70">
+    <template x-for="i in 2">
+      <div class="flex items-center gap-10 pr-10">
+        <span>massa madre viva</span><span class="text-crust">✦</span>
+        <span>farinha moída em pedra</span><span class="text-crust">✦</span>
+        <span>forno a lenha</span><span class="text-crust">✦</span>
+        <span>sem aditivos</span><span class="text-crust">✦</span>
+        <span>moído no dia</span><span class="text-crust">✦</span>
+        <span>fermentação de 24 horas</span><span class="text-crust">✦</span>
+      </div>
+    </template>
+  </div>
+</div>
+
+<!-- ============ FORNADA ============ -->
+<section id="fornada" class="mx-auto max-w-7xl px-6 py-28 lg:py-36"
+         x-data="{
+           scrollBy(d){ const r=this.$refs.rail, c=r.querySelector('article');
+                        r.scrollBy({left:d*(c ? c.offsetWidth+28 : 380), behavior:'smooth'}) }
+         }">
+  <div class="flex flex-wrap items-end justify-between gap-8">
+    <div class="reveal max-w-xl">
+      <p class="mb-4 text-[11px] uppercase tracking-[.34em] text-crust">01 — Produtos</p>
+      <h2 class="font-display text-5xl font-light leading-[1.03] lg:text-6xl">A fornada<br>de <em class="font-semibold italic text-ember">hoje</em></h2>
+      <p class="mt-6 max-w-md leading-relaxed text-cocoa/65">Assamos em pequenos lotes. Quando acaba, acabou — e amanhã tem de novo, às cinco da manhã.</p>
+    </div>
+    <div class="flex gap-3">
+      <button @click="scrollBy(-1)" class="grid h-14 w-14 place-items-center rounded-full border border-cocoa/20 transition-colors hover:border-cocoa hover:bg-cocoa hover:text-cream"><svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24"><path stroke-linecap="round" d="M19 12H5m6-6l-6 6 6 6"/></svg></button>
+      <button @click="scrollBy(1)" class="grid h-14 w-14 place-items-center rounded-full border border-cocoa/20 transition-colors hover:border-cocoa hover:bg-cocoa hover:text-cream"><svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24"><path stroke-linecap="round" d="M5 12h14m-6-6l6 6-6 6"/></svg></button>
+    </div>
+  </div>
+
+  <div x-ref="rail" class="rail -mx-6 mt-14 flex snap-x snap-mandatory gap-7 overflow-x-auto px-6 pb-4">
+    <template x-for="p in [
+      {n:'Pão de Fermentação Natural', d:'Crosta escura, miolo alveolado. 1,2 kg.', pr:'R$ 38', t:'Carro-chefe', img:'https://images.unsplash.com/photo-1598373182133-52452f7691ef?auto=format&fit=crop&w=900&q=80'},
+      {n:'Baguete de Trigo Antigo', d:'Farinha de trigo barbela, 18h de frio.', pr:'R$ 19', t:'Diário', img:'https://images.unsplash.com/photo-1549931319-a545dcf3bc73?auto=format&fit=crop&w=900&q=80'},
+      {n:'Croissant de Manteiga', d:'27 camadas, manteiga francesa 84%.', pr:'R$ 16', t:'Só de manhã', img:'https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=900&q=80'},
+      {n:'Broa de Milho e Erva-doce', d:'Receita da avó Idalina, 1953.', pr:'R$ 24', t:'Receita de família', img:'https://images.unsplash.com/photo-1586444248902-2f64eddc13df?auto=format&fit=crop&w=900&q=80'},
+      {n:'Focaccia de Alecrim', d:'Azeite extra virgem e flor de sal.', pr:'R$ 32', t:'Sextas', img:'https://images.unsplash.com/photo-1568254183919-78a4f43a2877?auto=format&fit=crop&w=900&q=80'},
+      {n:'Pão de Nozes e Figo', d:'Massa integral com 30% de centeio.', pr:'R$ 42', t:'Sazonal', img:'https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=900&q=80'}
+    ]" :key="p.n">
+      <article class="group w-[300px] shrink-0 snap-start sm:w-[350px]">
+        <div class="relative overflow-hidden rounded-[1.6rem] bg-sand">
+          <img :src="p.img" :alt="p.n" class="h-[420px] w-full object-cover transition-transform duration-[900ms] ease-out group-hover:scale-[1.06]">
+          <div class="absolute inset-0 bg-linear-to-t from-soot/70 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100"></div>
+          <span class="absolute left-4 top-4 rounded-full bg-cream/95 px-3.5 py-1.5 text-[10px] font-semibold uppercase tracking-[.16em] text-ember" x-text="p.t"></span>
+          <button class="absolute bottom-4 right-4 translate-y-3 rounded-full bg-cream px-5 py-3 text-[11px] font-semibold uppercase tracking-[.14em] text-cocoa opacity-0 transition-all duration-500 group-hover:translate-y-0 group-hover:opacity-100">Reservar</button>
+        </div>
+        <div class="mt-5 flex items-start justify-between gap-4">
+          <div>
+            <h3 class="font-display text-2xl leading-tight" x-text="p.n"></h3>
+            <p class="mt-1.5 text-sm text-cocoa/55" x-text="p.d"></p>
+          </div>
+          <span class="mt-1 shrink-0 font-display text-xl text-ember" x-text="p.pr"></span>
+        </div>
+      </article>
+    </template>
+  </div>
+</section>
+
+<!-- ============ HISTÓRIA ============ -->
+<section id="historia" class="bg-cocoa text-cream">
+  <div class="mx-auto grid max-w-7xl items-center gap-16 px-6 py-28 lg:grid-cols-2 lg:py-36">
+    <div class="reveal relative">
+      <img src="https://images.unsplash.com/photo-1509365465985-25d11c17e812?auto=format&fit=crop&w=1200&q=80" alt="Padeiro trabalhando a massa" class="aspect-[4/5] w-full rounded-[2rem] object-cover">
+      <img src="https://images.unsplash.com/photo-1608198093002-ad4e005484ec?auto=format&fit=crop&w=800&q=80" alt="Pão fatiado" class="absolute -bottom-10 -right-6 hidden aspect-square w-56 rounded-[1.5rem] border-8 border-cocoa object-cover sm:block">
+      <div class="absolute -left-6 top-10 hidden rounded-2xl bg-crust px-6 py-5 text-cocoa sm:block">
+        <p class="font-display text-3xl leading-none">1948</p>
+        <p class="mt-1 text-[10px] font-semibold uppercase tracking-[.2em]">primeira fornada</p>
+      </div>
+    </div>
+
+    <div class="reveal">
+      <p class="mb-4 text-[11px] uppercase tracking-[.34em] text-crust">02 — História</p>
+      <h2 class="font-display text-5xl font-light leading-[1.05] lg:text-6xl">Três gerações,<br>o mesmo <em class="font-semibold italic text-crust">fermento</em>.</h2>
+      <p class="mt-8 leading-relaxed text-cream/65">
+        Em 1948, Bruno Ferrari trouxe de Bolonha um pote de vidro com massa madre e a
+        teimosia de quem acredita que pão bom não tem pressa. O pote nunca esfriou.
+        Hoje, sua neta Helena alimenta o mesmo fermento todas as manhãs, às 4h30.
+      </p>
+      <p class="mt-5 leading-relaxed text-cream/65">
+        Continuamos com quatro ingredientes: farinha, água, sal e tempo. Nenhum melhorador,
+        nenhuma pressa, nenhum atalho.
+      </p>
+
+      <div class="mt-12 space-y-px overflow-hidden rounded-2xl bg-cream/10">
+        <div class="flex items-center gap-5 bg-cocoa p-6">
+          <span class="font-display text-2xl text-crust">01</span>
+          <div><p class="font-medium">Moinho próprio de pedra</p><p class="text-sm text-cream/50">Grãos moídos no dia anterior ao uso.</p></div>
+        </div>
+        <div class="flex items-center gap-5 bg-cocoa p-6">
+          <span class="font-display text-2xl text-crust">02</span>
+          <div><p class="font-medium">Produtores parceiros</p><p class="text-sm text-cream/50">Sete famílias do sul de Minas.</p></div>
+        </div>
+        <div class="flex items-center gap-5 bg-cocoa p-6">
+          <span class="font-display text-2xl text-crust">03</span>
+          <div><p class="font-medium">Forno a lenha de tijolo</p><p class="text-sm text-cream/50">Construído à mão em 1951, ainda em uso.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PROCESSO ============ -->
+<section id="processo" class="mx-auto max-w-7xl px-6 py-28 lg:py-36">
+  <div class="reveal mx-auto max-w-2xl text-center">
+    <p class="mb-4 text-[11px] uppercase tracking-[.34em] text-crust">03 — Processo</p>
+    <h2 class="font-display text-5xl font-light leading-[1.05] lg:text-6xl">Vinte e quatro horas,<br>passo a <em class="font-semibold italic text-ember">passo</em></h2>
+  </div>
+
+  <div class="mt-20 grid gap-x-8 gap-y-14 sm:grid-cols-2 lg:grid-cols-4">
+    <template x-for="(s,i) in [
+      {h:'04h30', t:'Alimentar a madre', d:'Farinha nova, água morna e uma hora de descanso para a levedura acordar.'},
+      {h:'06h00', t:'Autólise', d:'Farinha e água se conhecem sozinhas antes do sal entrar na conversa.'},
+      {h:'12h00', t:'Dobras e descanso', d:'Seis dobras a cada 45 minutos. Nenhuma máquina toca a massa.'},
+      {h:'05h00', t:'Ao forno', d:'450 °C na soleira de pedra, vapor nos primeiros 12 minutos.'}
+    ]" :key="s.t">
+      <div class="relative">
+        <div class="rule mb-7"></div>
+        <p class="font-display text-5xl text-sand" x-text="'0'+(i+1)"></p>
+        <p class="mt-4 text-[11px] font-semibold uppercase tracking-[.22em] text-ember" x-text="s.h"></p>
+        <h3 class="mt-2 font-display text-2xl" x-text="s.t"></h3>
+        <p class="mt-3 text-sm leading-relaxed text-cocoa/60" x-text="s.d"></p>
+      </div>
+    </template>
+  </div>
+</section>
+
+<!-- ============ DEPOIMENTOS ============ -->
+<section class="bg-sand" x-data="{ i:0, items:[
+    {q:'Fui atrás do pão e voltei pela conversa. A Helena explica cada fatia como quem conta uma história de família.', a:'Marina Sagl', r:'cliente há 9 anos'},
+    {q:'Depois que provei a baguete de trigo barbela, nenhum supermercado me serve mais. É outro produto, outra categoria.', a:'Rafael Duarte', r:'chef, restaurante Oriundi'},
+    {q:'Meu filho de quatro anos chama de “pão do fogo”. Chegamos às 6h50 num sábado e ainda pegamos a segunda fornada.', a:'Camila Restrepo', r:'moradora do bairro'}
+  ] }">
+  <div class="mx-auto max-w-4xl px-6 py-28 text-center lg:py-36">
+    <svg class="mx-auto h-10 w-10 text-crust" fill="currentColor" viewBox="0 0 24 24"><path d="M9.5 5C6.5 5 4 7.6 4 10.8 4 13.7 6.1 16 8.8 16c.4 0 .8 0 1.1-.1-.6 1.9-2.2 3.4-4.2 4L6.4 22c4.3-1.4 7.1-5.3 7.1-10.2C13.5 7.7 11.9 5 9.5 5Zm10 0C16.5 5 14 7.6 14 10.8c0 2.9 2.1 5.2 4.8 5.2.4 0 .8 0 1.1-.1-.6 1.9-2.2 3.4-4.2 4l.7 2.1c4.3-1.4 7.1-5.3 7.1-10.2C23.5 7.7 21.9 5 19.5 5Z"/></svg>
+
+    <div class="relative mt-10 min-h-[230px] sm:min-h-[200px]">
+      <template x-for="(t,idx) in items" :key="idx">
+        <div x-show="i===idx" x-transition:enter="transition duration-700" x-transition:enter-start="opacity-0 translate-y-4" class="absolute inset-0">
+          <p class="font-display text-2xl font-light leading-snug sm:text-4xl" x-text="'“'+t.q+'”'"></p>
+          <p class="mt-8 text-[12px] font-semibold uppercase tracking-[.22em]" x-text="t.a"></p>
+          <p class="mt-1 text-[12px] uppercase tracking-[.18em] text-cocoa/45" x-text="t.r"></p>
+        </div>
+      </template>
+    </div>
+
+    <div class="mt-8 flex justify-center gap-2.5">
+      <template x-for="(t,idx) in items" :key="idx">
+        <button @click="i=idx" :class="i===idx ? 'w-10 bg-ember' : 'w-2.5 bg-cocoa/25'" class="h-2.5 rounded-full transition-all duration-500"></button>
+      </template>
+    </div>
+  </div>
+</section>
+
+<!-- ============ VISITE ============ -->
+<section id="visite" class="mx-auto max-w-7xl px-6 py-28 lg:py-36">
+  <div class="grid gap-14 lg:grid-cols-[1fr_1.1fr] lg:items-center">
+    <div class="reveal">
+      <p class="mb-4 text-[11px] uppercase tracking-[.34em] text-crust">04 — Visite</p>
+      <h2 class="font-display text-5xl font-light leading-[1.05] lg:text-6xl">Chegue cedo.<br>Sempre <em class="font-semibold italic text-ember">acaba</em>.</h2>
+
+      <dl class="mt-12 divide-y divide-cocoa/10 border-y border-cocoa/10">
+        <div class="flex justify-between py-5"><dt class="text-[12px] uppercase tracking-[.2em] text-cocoa/50">Terça a sexta</dt><dd class="font-display text-xl">06h00 — 19h00</dd></div>
+        <div class="flex justify-between py-5"><dt class="text-[12px] uppercase tracking-[.2em] text-cocoa/50">Sábado</dt><dd class="font-display text-xl">06h00 — 15h00</dd></div>
+        <div class="flex justify-between py-5"><dt class="text-[12px] uppercase tracking-[.2em] text-cocoa/50">Domingo</dt><dd class="font-display text-xl">07h00 — 13h00</dd></div>
+        <div class="flex justify-between py-5"><dt class="text-[12px] uppercase tracking-[.2em] text-cocoa/50">Segunda</dt><dd class="font-display text-xl text-cocoa/35">Descanso do forno</dd></div>
+      </dl>
+
+      <div class="mt-10 space-y-2 text-cocoa/70">
+        <p class="font-medium text-cocoa">Rua Harmonia, 412 — Vila Madalena, São Paulo</p>
+        <p>(11) 3031-4820 · ola@fornodepedra.com.br</p>
+      </div>
+
+      <a href="#" class="mt-9 inline-flex items-center gap-3 rounded-full bg-cocoa px-8 py-4 text-[12px] font-semibold uppercase tracking-[.18em] text-cream transition-colors hover:bg-ember">
+        Traçar rota
+        <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" d="M7 17L17 7m0 0H9m8 0v8"/></svg>
+      </a>
+    </div>
+
+    <div class="reveal relative overflow-hidden rounded-[2rem]">
+      <img src="https://images.unsplash.com/photo-1464195244916-405fa0a82545?auto=format&fit=crop&w=1400&q=80" alt="Salão da padaria" class="aspect-[4/3] w-full object-cover">
+      <div class="absolute bottom-6 left-6 right-6 rounded-2xl bg-cream/92 p-6 backdrop-blur-xs">
+        <div class="flex items-center gap-3">
+          <span class="relative flex h-2.5 w-2.5">
+            <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-olive opacity-75"></span>
+            <span class="relative inline-flex h-2.5 w-2.5 rounded-full bg-olive"></span>
+          </span>
+          <p class="text-[12px] font-semibold uppercase tracking-[.18em]">Aberto agora</p>
+        </div>
+        <p class="mt-2 text-sm text-cocoa/60">Fornada das 15h saindo em breve — pão de nozes e figo.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ NEWSLETTER ============ -->
+<section class="grain relative overflow-hidden bg-ember">
+  <div class="reveal relative mx-auto max-w-4xl px-6 py-24 text-center text-cream">
+    <h2 class="font-display text-4xl font-light leading-tight sm:text-5xl">Saiba o que sai do forno<br>antes de todo mundo</h2>
+    <p class="mx-auto mt-5 max-w-md text-cream/70">Uma mensagem por semana com a fornada especial e as receitas sazonais.</p>
+    <form @submit.prevent="sent=true" x-data="{sent:false}" class="mx-auto mt-10 max-w-lg">
+      <div x-show="!sent" class="flex flex-col gap-3 sm:flex-row">
+        <input type="email" required placeholder="seu@email.com" class="w-full rounded-full border border-cream/25 bg-cream/10 px-6 py-4 text-cream placeholder-cream/45 outline-none transition focus:border-cream/60 focus:bg-cream/15">
+        <button class="shrink-0 rounded-full bg-cream px-8 py-4 text-[12px] font-semibold uppercase tracking-[.18em] text-ember transition-colors hover:bg-sand">Assinar</button>
+      </div>
+      <p x-cloak x-show="sent" x-transition class="rounded-full border border-cream/30 bg-cream/10 px-6 py-4 text-cream">Pronto! Nos vemos na próxima fornada. 🥖</p>
+    </form>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer class="bg-soot text-cream/60">
+  <div class="mx-auto max-w-7xl px-6 py-20">
+    <div class="grid gap-12 md:grid-cols-[2fr_1fr_1fr_1fr]">
+      <div>
+        <div class="flex items-center gap-3">
+          <span class="grid h-11 w-11 place-items-center rounded-full bg-crust font-display text-xl text-soot">F</span>
+          <span class="font-display text-xl text-cream">Forno de Pedra</span>
+        </div>
+        <p class="mt-6 max-w-xs text-sm leading-relaxed">Padaria artesanal de fermentação natural. Farinha, água, sal e tempo — desde 1948.</p>
+        <div class="mt-7 flex gap-3">
+          <a href="#" class="grid h-11 w-11 place-items-center rounded-full border border-cream/15 transition hover:border-crust hover:text-crust"><svg class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.2c3.2 0 3.6 0 4.9.1 1.2.1 1.8.3 2.2.4.6.2 1 .5 1.4.9.4.4.7.8.9 1.4.2.4.4 1 .4 2.2.1 1.3.1 1.7.1 4.9s0 3.6-.1 4.9c0 1.2-.2 1.8-.4 2.2-.2.6-.5 1-.9 1.4-.4.4-.8.7-1.4.9-.4.2-1 .4-2.2.4-1.3.1-1.7.1-4.9.1s-3.6 0-4.9-.1c-1.2 0-1.8-.2-2.2-.4-.6-.2-1-.5-1.4-.9-.4-.4-.7-.8-.9-1.4-.2-.4-.4-1-.4-2.2C2.2 15.6 2.2 15.2 2.2 12s0-3.6.1-4.9c0-1.2.2-1.8.4-2.2.2-.6.5-1 .9-1.4.4-.4.8-.7 1.4-.9.4-.2 1-.4 2.2-.4C8.4 2.2 8.8 2.2 12 2.2Zm0 5.3A4.5 4.5 0 1 0 16.5 12 4.5 4.5 0 0 0 12 7.5Zm0 7.4A2.9 2.9 0 1 1 14.9 12 2.9 2.9 0 0 1 12 14.9Zm5.7-7.6a1.1 1.1 0 1 1-1.1-1.1 1.1 1.1 0 0 1 1.1 1.1Z"/></svg></a>
+          <a href="#" class="grid h-11 w-11 place-items-center rounded-full border border-cream/15 transition hover:border-crust hover:text-crust"><svg class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24"><path d="M13.5 22v-8h2.7l.4-3.1h-3.1V8.9c0-.9.25-1.5 1.55-1.5h1.65V4.6a22 22 0 0 0-2.4-.12c-2.4 0-4.05 1.46-4.05 4.15v2.31H7.5V14h2.75v8Z"/></svg></a>
+          <a href="#" class="grid h-11 w-11 place-items-center rounded-full border border-cream/15 transition hover:border-crust hover:text-crust"><svg class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2a10 10 0 0 0-8.6 15.06L2 22l5.06-1.33A10 10 0 1 0 12 2Zm5.1 14.1c-.24.67-1.4 1.28-1.93 1.32-.5.05-1.12.07-1.8-.11a15.3 15.3 0 0 1-6.4-5.35c-.47-.7-.8-1.53-.8-2.4 0-.86.45-1.28.62-1.46.17-.17.37-.22.5-.22h.36c.11 0 .27-.04.42.32l.63 1.52c.05.11.09.24.02.38l-.24.36-.35.38c-.11.11-.23.24-.1.47.13.23.58.96 1.25 1.55.86.77 1.58 1 1.8 1.12.23.11.36.09.5-.06l.66-.77c.15-.19.3-.15.5-.09l1.42.67c.2.1.34.15.4.23.05.09.05.5-.19 1.16Z"/></svg></a>
+        </div>
+      </div>
+
+      <div>
+        <p class="mb-5 text-[11px] font-semibold uppercase tracking-[.22em] text-cream">Padaria</p>
+        <ul class="space-y-3 text-sm">
+          <li><a href="#fornada" class="transition hover:text-crust">Fornada</a></li>
+          <li><a href="#historia" class="transition hover:text-crust">História</a></li>
+          <li><a href="#processo" class="transition hover:text-crust">Processo</a></li>
+          <li><a href="#" class="transition hover:text-crust">Trabalhe conosco</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="mb-5 text-[11px] font-semibold uppercase tracking-[.22em] text-cream">Serviços</p>
+        <ul class="space-y-3 text-sm">
+          <li><a href="#" class="transition hover:text-crust">Encomendas</a></li>
+          <li><a href="#" class="transition hover:text-crust">Fornecimento p/ restaurantes</a></li>
+          <li><a href="#" class="transition hover:text-crust">Cursos de panificação</a></li>
+          <li><a href="#" class="transition hover:text-crust">Cestas de presente</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="mb-5 text-[11px] font-semibold uppercase tracking-[.22em] text-cream">Contato</p>
+        <ul class="space-y-3 text-sm">
+          <li>Rua Harmonia, 412</li>
+          <li>Vila Madalena, SP</li>
+          <li>(11) 3031-4820</li>
+          <li>ola@fornodepedra.com.br</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="mt-16 flex flex-col items-center justify-between gap-4 border-t border-cream/10 pt-8 text-[12px] sm:flex-row">
+      <p>© 2026 Forno de Pedra. Todos os direitos reservados.</p>
+      <p>Feito com farinha, água, sal e tempo.</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const io = new IntersectionObserver(es => es.forEach(e => e.isIntersecting && e.target.classList.add('on')), {threshold:.12});
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+</script>
+</body>
+</html>
