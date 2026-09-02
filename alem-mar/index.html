@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Padaria Além Mar | Pão quente todo dia em Santos</title>
+<meta name="description" content="Padaria Além Mar, em Santos. aberta todos os dias das 5h30 às 22h. Buffet de café da manhã, almoço, sopas no inverno, encomendas e empório.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Fraunces:opsz,wght,SOFT,WONK@9..144,300..900,0..100,0..1&display=swap" rel="stylesheet">
+<style>
+  /* paleta tirada da logo: disco azul-maré, sol amarelo,
+     fundo quase preto e o anel laranja / magenta / roxo */
+  :root{
+    --mar:#2B4457;
+    --mar-fundo:#172A37;
+    --mar-medio:#3E627C;
+    --mar-logo:#7B94A6;
+    --espuma:#F8F7F4;
+    --bruma:#E6ECF0;
+    --sol:#E9B62A;
+    --sol-claro:#F3D062;
+    --noite:#1A1C20;
+    --grafite-suave:#5E656C;
+    --linha:#DCE2E7;
+    --anel:linear-gradient(90deg,#E8871E 0%,#D2439A 34%,#7B4FA8 62%,#3E8FA8 100%);
+    --max:1180px;
+  }
+
+  *,*::before,*::after{box-sizing:border-box}
+
+  html{scroll-behavior:smooth}
+  @media (prefers-reduced-motion:reduce){
+    html{scroll-behavior:auto}
+    *{animation:none!important;transition:none!important}
+  }
+
+  body{
+    margin:0;
+    background:var(--espuma);
+    color:var(--noite);
+    font-family:"Archivo",system-ui,-apple-system,"Segoe UI",sans-serif;
+    font-size:17px;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  h1,h2,h3,.serif{
+    font-family:"Fraunces",Georgia,"Times New Roman",serif;
+    font-variation-settings:"SOFT" 40,"WONK" 1;
+    font-weight:600;
+    line-height:1.08;
+    letter-spacing:-.015em;
+    margin:0;
+  }
+
+  a{color:inherit}
+  img,svg{display:block;max-width:100%}
+  p{margin:0 0 1em}
+  p:last-child{margin-bottom:0}
+
+  :focus-visible{
+    outline:3px solid var(--sol);
+    outline-offset:3px;
+    border-radius:6px;
+  }
+
+  .env{width:100%;max-width:var(--max);margin:0 auto;padding:0 24px}
+
+  /* ---------- barra superior ---------- */
+  .fita-anel{height:5px;background:var(--anel)}
+  .aviso{
+    background:var(--mar-fundo);
+    color:#D4DDE4;
+    font-size:.82rem;
+    letter-spacing:.01em;
+  }
+  .aviso .env{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px 28px;
+    align-items:center;
+    min-height:42px;
+    padding-top:8px;
+    padding-bottom:8px;
+  }
+  .aviso b{color:var(--sol-claro);font-weight:600}
+  .aviso a{text-decoration:none;border-bottom:1px solid rgba(243,208,98,.4)}
+  .aviso a:hover{border-bottom-color:var(--sol-claro)}
+  .aviso .direita{margin-left:auto;display:flex;gap:28px;flex-wrap:wrap}
+
+  /* ---------- cabeçalho ---------- */
+  .topo{
+    position:sticky;top:0;z-index:40;
+    background:var(--espuma);
+    border-bottom:1px solid var(--linha);
+  }
+  .topo .env{
+    display:flex;align-items:center;gap:32px;
+    min-height:88px;
+  }
+  .marca{
+    display:flex;align-items:center;gap:12px;
+    text-decoration:none;flex-shrink:0;
+  }
+  .marca .selo{
+    width:44px;height:44px;flex:0 0 44px;
+    border-radius:50%;
+    background:var(--mar);
+    display:grid;place-items:center;
+  }
+  .marca .nome{
+    font-family:"Fraunces",Georgia,serif;
+    font-variation-settings:"SOFT" 40,"WONK" 1;
+    font-weight:700;font-size:1.5rem;line-height:1;
+    color:var(--mar);
+  }
+  .marca .desde{
+    display:block;font-family:"Archivo",sans-serif;
+    font-size:.66rem;font-weight:500;letter-spacing:.16em;
+    color:var(--grafite-suave);margin-top:0;
+  }
+
+  nav.menu ul{display:flex;gap:26px;list-style:none;margin:0;padding:0}
+  nav.menu a{
+    text-decoration:none;font-size:.94rem;font-weight:500;
+    padding:6px 0;border-bottom:2px solid transparent;
+    transition:border-color .18s,color .18s;
+  }
+  nav.menu a:hover{color:var(--mar);border-bottom-color:var(--sol)}
+
+  .botao{
+    display:inline-block;text-decoration:none;text-align:center;
+    font-family:"Archivo",sans-serif;font-size:.95rem;font-weight:600;
+    padding:13px 24px;border-radius:10px;border:1.5px solid transparent;
+    cursor:pointer;transition:background .18s,color .18s,border-color .18s;
+  }
+  .botao.cheio{background:var(--sol);color:#1A1405;border-color:var(--sol)}
+  .botao.cheio:hover{background:var(--sol-claro);border-color:var(--sol-claro)}
+  .botao.vazio{border-color:currentColor;background:transparent}
+  .botao.vazio:hover{background:rgba(255,255,255,.1)}
+  .topo .botao{margin-left:auto}
+
+  .abrir-menu{
+    display:none;margin-left:auto;background:none;border:1.5px solid var(--linha);
+    border-radius:10px;padding:10px 14px;cursor:pointer;font:inherit;font-size:.9rem;
+    color:var(--mar);
+  }
+
+  /* ---------- hero ---------- */
+  .hero{
+    background:var(--mar);
+    color:#EFF3F0;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='42' viewBox='0 0 120 42'%3E%3Cg fill='none' stroke='%23ffffff' stroke-opacity='0.07' stroke-width='1.4' stroke-linecap='round'%3E%3Cpath d='M0 9 Q15 1 30 9 T60 9 T90 9 T120 9'/%3E%3Cpath d='M0 21 Q15 13 30 21 T60 21 T90 21 T120 21'/%3E%3Cpath d='M0 33 Q15 25 30 33 T60 33 T90 33 T120 33'/%3E%3C/g%3E%3C/svg%3E");
+    overflow:hidden;
+  }
+  .hero .env{
+    display:grid;
+    grid-template-columns:1.05fr .95fr;
+    gap:64px;align-items:center;
+    padding-top:88px;padding-bottom:88px;
+  }
+  .hero h1{
+    font-size:clamp(2.6rem,6vw,4.4rem);
+    font-weight:600;
+    color:#fff;
+    max-width:13ch;
+  }
+  .hero .sub{
+    margin-top:26px;max-width:46ch;
+    font-size:1.08rem;color:#C2D0DA;
+  }
+  .hero .acoes{display:flex;gap:14px;flex-wrap:wrap;margin-top:34px}
+  .hero .fatos{
+    display:flex;gap:26px;flex-wrap:wrap;
+    margin-top:38px;padding-top:22px;
+    border-top:1px solid rgba(255,255,255,.16);
+    font-size:.9rem;color:#AEBFCB;
+  }
+  .hero .fatos span{display:flex;align-items:center;gap:8px}
+
+  /* vitrine */
+  .vitrine{
+    background:var(--espuma);
+    border:6px solid var(--sol);
+    border-radius:18px;
+    overflow:hidden;
+    box-shadow:0 26px 60px rgba(0,0,0,.32);
+  }
+  .vitrine .cabeca{
+    background:var(--sol);
+    color:#1A1405;
+    padding:9px 18px;
+    font-size:.8rem;font-weight:600;letter-spacing:.06em;
+    display:flex;justify-content:space-between;align-items:center;
+  }
+  .prateleira{
+    display:grid;grid-template-columns:repeat(3,1fr);
+    border-bottom:3px solid var(--linha);
+  }
+  .prateleira:last-child{border-bottom:0}
+  .prateleira figure{
+    margin:0;padding:0 0 14px;text-align:center;
+    border-right:1px solid var(--linha);
+  }
+  .prateleira figure:last-child{border-right:0}
+  .prateleira .foto{
+    width:100%;aspect-ratio:4/3;object-fit:cover;
+    background:var(--bruma);margin-bottom:11px;
+  }
+  .prateleira span{
+    display:block;padding:0 8px;font-size:.76rem;color:var(--grafite-suave);
+    line-height:1.35;
+  }
+
+  /* ---------- faixa de buffets ---------- */
+  .buffets{background:var(--bruma);border-bottom:1px solid var(--linha)}
+  .buffets .env{
+    display:grid;grid-template-columns:repeat(4,1fr);
+    gap:1px;padding-top:0;padding-bottom:0;
+  }
+  .buffets article{
+    padding:30px 26px 30px 0;
+    border-right:1px solid rgba(43,68,87,.18);
+  }
+  .buffets article:last-child{border-right:0;padding-right:0}
+  .buffets article:not(:first-child){padding-left:26px}
+  .buffets h3{font-size:1.2rem;color:var(--mar);margin-bottom:7px}
+  .buffets p{font-size:.9rem;color:var(--grafite-suave);line-height:1.5}
+  .buffets .pausado{color:#C4671F}
+
+  /* ---------- seções ---------- */
+  section{padding:86px 0}
+  .cabecalho-secao{max-width:60ch;margin-bottom:46px}
+  .cabecalho-secao h2{font-size:clamp(1.9rem,3.6vw,2.7rem);color:var(--mar)}
+  .cabecalho-secao p{margin-top:16px;color:var(--grafite-suave)}
+
+  /* ---------- três destaques ---------- */
+  .destaques{display:grid;grid-template-columns:repeat(3,1fr);gap:34px}
+  .destaques article{display:flex;flex-direction:column}
+  .destaques .capa{
+    height:210px;background:var(--mar);
+    display:grid;place-items:center;color:var(--sol-claro);
+    border-radius:14px 14px 0 0;
+    position:relative;overflow:hidden;
+  }
+  .destaques .capa img{
+    position:absolute;inset:0;
+    width:100%;height:100%;object-fit:cover;
+  }
+  .destaques .capa.b{background:var(--mar-medio)}
+  .destaques .capa.c{background:#1D3444}
+  .destaques .corpo{
+    border:1px solid var(--linha);border-top:0;
+    padding:26px 26px 28px;flex:1;
+    display:flex;flex-direction:column;
+    border-radius:0 0 14px 14px;background:#fff;
+  }
+  .destaques h3{font-size:1.4rem;color:var(--mar);margin-bottom:12px}
+  .destaques p{font-size:.95rem;color:var(--grafite-suave)}
+  .destaques a.link{
+    margin-top:auto;padding-top:18px;
+    font-weight:600;font-size:.93rem;color:var(--mar);
+    text-decoration:none;border-bottom:2px solid var(--sol);
+    align-self:flex-start;
+  }
+  .destaques a.link:hover{color:var(--sol)}
+
+  /* ---------- saída do forno (assinatura) ---------- */
+  .forno{background:var(--mar-fundo);color:#DCE6EC}
+  .forno .cabecalho-secao h2{color:#fff}
+  .forno .cabecalho-secao p{color:#9FB2BF}
+  .relogio{
+    display:grid;grid-template-columns:repeat(6,1fr);
+    margin-top:8px;
+  }
+  .relogio div{
+    border-top:2px solid var(--sol);
+    padding:26px 14px 0 0;
+    position:relative;
+  }
+  .relogio div::before{
+    content:"";position:absolute;top:-7px;left:0;
+    width:12px;height:12px;border-radius:50%;
+    background:var(--sol);
+  }
+  .relogio .hora{
+    font-family:"Fraunces",Georgia,serif;
+    font-variation-settings:"SOFT" 40,"WONK" 1;
+    font-size:1.7rem;font-weight:600;color:var(--sol-claro);
+    display:block;line-height:1;
+  }
+  .relogio .item{display:block;margin-top:9px;font-weight:600;font-size:.98rem}
+  .relogio .nota{display:block;margin-top:4px;font-size:.82rem;color:#8FA2AF}
+  .forno .rodape-nota{
+    margin-top:44px;font-size:.9rem;color:#8FA2AF;max-width:60ch;
+  }
+
+  /* ---------- cardápio ---------- */
+  .cardapio-grade{display:grid;grid-template-columns:1fr 1fr;gap:0 64px}
+  .grupo{margin-bottom:44px}
+  .grupo .capa-grupo{
+    height:160px;border-radius:12px;overflow:hidden;
+    margin-bottom:20px;background:var(--bruma);
+  }
+  .grupo .capa-grupo img{width:100%;height:100%;object-fit:cover;display:block}
+  .grupo h3{
+    font-size:1.25rem;color:var(--mar);
+    padding-bottom:12px;border-bottom:2px solid var(--mar);
+    margin-bottom:6px;
+  }
+  .prato{display:flex;align-items:baseline;gap:8px;padding:13px 0;border-bottom:1px solid var(--linha)}
+  .prato .nome{font-weight:500}
+  .prato .nome small{display:block;font-weight:400;font-size:.83rem;color:var(--grafite-suave);margin-top:2px}
+  .prato .pontos{flex:1;border-bottom:1px dotted #B9C3CB;transform:translateY(-4px)}
+  .prato .preco{font-variant-numeric:tabular-nums;font-weight:600;color:var(--mar);white-space:nowrap}
+
+  /* ---------- sobre ---------- */
+  .sobre{background:var(--bruma)}
+  .sobre .env{display:grid;grid-template-columns:1fr 1fr;gap:70px;align-items:center}
+  .sobre-foto{
+    grid-column:1 / -1;height:340px;
+    border-radius:14px;overflow:hidden;background:var(--mar);
+    margin-bottom:8px;
+  }
+  .sobre-foto img{width:100%;height:100%;object-fit:cover}
+  .sobre h2{font-size:clamp(1.9rem,3.6vw,2.7rem);color:var(--mar);max-width:16ch}
+  .sobre p{margin-top:20px;color:#414A52;max-width:52ch}
+  .numeros{
+    display:grid;grid-template-columns:1fr 1fr;gap:2px;
+    background:rgba(43,68,87,.18);
+    border-radius:14px;overflow:hidden;
+  }
+  .numeros div{background:var(--bruma);padding:30px 26px}
+  .numeros strong{
+    display:block;font-family:"Fraunces",Georgia,serif;
+    font-variation-settings:"SOFT" 40,"WONK" 1;
+    font-size:2.5rem;font-weight:600;color:var(--mar);line-height:1;
+  }
+  .numeros span{display:block;margin-top:9px;font-size:.88rem;color:var(--grafite-suave)}
+
+  /* ---------- contato ---------- */
+  .contato .env{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:start}
+  .dados dt{
+    font-size:.82rem;letter-spacing:.1em;color:var(--grafite-suave);
+    margin-top:26px;
+  }
+  .dados dt:first-child{margin-top:0}
+  .dados dd{margin:6px 0 0;font-size:1.12rem;font-weight:500}
+  .dados dd a{text-decoration:none;border-bottom:2px solid var(--sol)}
+  .dados dd a.secundario{
+    display:inline-block;margin-top:10px;
+    font-size:.95rem;font-weight:500;color:var(--mar);
+  }
+  .mapa{
+    border:1px solid var(--linha);border-radius:14px;overflow:hidden;
+    background:#fff;
+  }
+  .mapa .desenho{
+    height:320px;
+    background:
+      repeating-linear-gradient(0deg,rgba(43,68,87,.09) 0 1px,transparent 1px 46px),
+      repeating-linear-gradient(90deg,rgba(43,68,87,.09) 0 1px,transparent 1px 46px),
+      var(--bruma);
+  }
+  .mapa .desenho iframe{
+    width:100%;height:100%;border:0;display:block;
+  }
+  .mapa .rodape{
+    display:flex;gap:22px;padding:16px 20px;border-top:1px solid var(--linha);
+    font-size:.9rem;font-weight:600;
+  }
+  .mapa .rodape a{color:var(--mar);text-decoration:none;border-bottom:2px solid var(--sol)}
+
+  /* ---------- rodapé ---------- */
+  footer{background:var(--mar-fundo);color:#BCCAD4;padding:70px 0 0}
+  .rodape-grade{
+    display:grid;grid-template-columns:1.4fr 1fr 1fr 1.3fr;gap:44px;
+    padding-bottom:52px;
+  }
+  footer h4{
+    font-family:"Archivo",sans-serif;font-size:.84rem;font-weight:600;
+    letter-spacing:.1em;color:var(--sol-claro);margin:0 0 16px;
+  }
+  footer ul{list-style:none;margin:0;padding:0;display:grid;gap:11px;font-size:.94rem}
+  footer a{text-decoration:none}
+  footer ul a:hover{color:var(--sol-claro)}
+  .assinatura .nome{
+    font-family:"Fraunces",Georgia,serif;
+    font-variation-settings:"SOFT" 40,"WONK" 1;
+    font-size:1.6rem;font-weight:700;color:#fff;
+  }
+  .assinatura p{margin-top:14px;font-size:.92rem;color:#8B9BA6;max-width:32ch}
+  .news{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap}
+  .news input{
+    flex:1;min-width:170px;padding:12px 14px;font:inherit;font-size:.94rem;
+    background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.2);
+    color:#fff;border-radius:10px;
+  }
+  .news input::placeholder{color:#7E8F9B}
+  .news .botao{padding:12px 20px}
+  .news-ok{margin-top:12px;font-size:.88rem;color:var(--sol-claro)}
+  .creditos{
+    border-top:1px solid rgba(255,255,255,.13);
+    padding:22px 0 26px;font-size:.85rem;color:#7E8F9B;
+    display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
+  }
+
+  /* ---------- responsivo ---------- */
+  @media (max-width:980px){
+    .hero .env{grid-template-columns:1fr;gap:48px;padding-top:60px;padding-bottom:60px}
+    .buffets .env{grid-template-columns:1fr 1fr}
+    .buffets article{padding:24px 20px;border-bottom:1px solid rgba(43,68,87,.18)}
+    .buffets article:nth-child(odd){padding-left:0}
+    .buffets article:nth-child(even){border-right:0;padding-right:0}
+    .buffets article:nth-last-child(-n+2){border-bottom:0}
+    .destaques{grid-template-columns:1fr;gap:26px}
+    .relogio{grid-template-columns:repeat(3,1fr);gap:30px 0}
+    .cardapio-grade,.sobre .env,.contato .env{grid-template-columns:1fr;gap:0 0}
+    .sobre .env,.contato .env{gap:44px}
+    .sobre-foto{height:230px}
+    .rodape-grade{grid-template-columns:1fr 1fr;gap:36px}
+  }
+  @media (max-width:860px){
+    .topo .env{min-height:74px;gap:16px}
+    nav.menu{
+      display:none;position:absolute;top:100%;left:0;right:0;
+      background:var(--espuma);border-bottom:1px solid var(--linha);
+      padding:14px 24px 22px;
+    }
+    nav.menu.aberto{display:block}
+    nav.menu ul{flex-direction:column;gap:0}
+    nav.menu li{border-bottom:1px solid var(--linha)}
+    nav.menu li:last-child{border-bottom:0}
+    nav.menu a{display:block;padding:14px 0;font-size:1rem}
+    .abrir-menu{display:block}
+    .topo .botao{display:none}
+    .aviso .direita{margin-left:0}
+  }
+  @media (max-width:560px){
+    section{padding:58px 0}
+    .buffets .env{grid-template-columns:1fr}
+    .buffets article{padding:22px 0;border-right:0}
+    .buffets article:nth-last-child(-n+2){border-bottom:1px solid rgba(43,68,87,.18)}
+    .buffets article:last-child{border-bottom:0}
+    .relogio{grid-template-columns:1fr 1fr}
+    .numeros{grid-template-columns:1fr}
+    .rodape-grade{grid-template-columns:1fr}
+    .prateleira figure{padding:0 0 10px}
+  }
+
+  /* entrada única no carregamento */
+  @media (prefers-reduced-motion:no-preference){
+    .hero h1,.hero .sub,.hero .acoes,.hero .fatos,.vitrine{
+      animation:entra .7s cubic-bezier(.2,.7,.3,1) both;
+    }
+    .hero .sub{animation-delay:.08s}
+    .hero .acoes{animation-delay:.14s}
+    .hero .fatos{animation-delay:.2s}
+    .vitrine{animation-delay:.1s}
+    @keyframes entra{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+  }
+</style>
+</head>
+<body>
+
+<div class="fita-anel" aria-hidden="true"></div>
+
+<!-- ============ barra de avisos ============ -->
+<div class="aviso">
+  <div class="env">
+    <span><b>Todos os dias</b>, das 5h30 às 22h</span>
+    <span>Estacionamento gratuito</span>
+    <span class="direita"><a href="#contato">Av. Sen. Pinheiro Machado, 622, Santos</a></span>
+    <span><a href="tel:+551332373632">(13) 3237-3632</a></span>
+  </div>
+</div>
+
+<!-- ============ cabeçalho ============ -->
+<header class="topo" id="topo">
+  <div class="env">
+    <a class="marca" href="#topo">
+      <span class="selo" aria-hidden="true">
+        <svg width="26" height="26" viewBox="0 0 32 32" fill="none" stroke="#F3D062" stroke-width="1.6" stroke-linecap="round">
+          <path d="M6 20c0-6 4.5-10 10-10s10 4 10 10c0 2-1.4 3-3.2 3H9.2C7.4 23 6 22 6 20Z"/>
+          <path d="M12 12.5 10 20M16 12.2 16 20M20 12.5 22 20"/>
+        </svg>
+      </span>
+      <span>
+        <span class="nome">Além Mar</span>
+        <span class="desde">Padaria em Santos</span>
+      </span>
+    </a>
+
+    <button class="abrir-menu" aria-expanded="false" aria-controls="menu-principal">Menu</button>
+
+    <nav class="menu" id="menu-principal" aria-label="Principal">
+      <ul>
+        <li><a href="#cardapio">Cardápio</a></li>
+        <li><a href="#buffets">Buffets</a></li>
+        <li><a href="#forno">Saída do forno</a></li>
+        <li><a href="#sobre">A casa</a></li>
+        <li><a href="#contato">Onde estamos</a></li>
+      </ul>
+    </nav>
+
+    <a class="botao cheio" href="#encomendas">Fazer encomenda</a>
+  </div>
+</header>
+
+<!-- ============ hero ============ -->
+<div class="hero">
+  <div class="env">
+    <div>
+      <h1>O dia aqui começa às 5h30, com o forno já quente</h1>
+      <p class="sub">Sete fornadas por dia, buffet no fim de semana, sopa no inverno e o cafezinho de sempre. Abrimos todo dia às 5h30 e ficamos até as 22h, sem pular domingo nem feriado.</p>
+      <div class="acoes">
+        <a class="botao cheio" href="#cardapio">Ver o cardápio</a>
+        <a class="botao vazio" href="#encomendas">Pedir orçamento</a>
+      </div>
+      <div class="fatos">
+        <span>
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>
+          Das 5h30 às 22h, todo dia
+        </span>
+        <span>
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M9 16V8h3.5a2.6 2.6 0 0 1 0 5.2H9"/></svg>
+          Estacionamento gratuito
+        </span>
+        <span>
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M5 19h14M7 19V9l5-4 5 4v10"/><path d="M10.5 19v-4h3v4"/></svg>
+          Empório e adega
+        </span>
+      </div>
+    </div>
+
+    <!-- vitrine -->
+    <div class="vitrine">
+      <div class="cabeca">
+        <span>Na vitrine agora</span>
+        <span>05h40</span>
+      </div>
+
+      <div class="prateleira">
+        <figure>
+          <img class="foto" src="https://images.unsplash.com/photo-1577595927087-dedbe84f0e4d?fm=jpg&q=70&auto=format&fit=crop&w=520" alt="cesta de pães franceses" loading="lazy">
+          <span>Pão francês<br>saído às 5h30</span>
+        </figure>
+        <figure>
+          <img class="foto" src="https://images.unsplash.com/photo-1534432182912-63863115e106?fm=jpg&q=70&auto=format&fit=crop&w=520" alt="folhados e croissants na vitrine" loading="lazy">
+          <span>Croissant<br>de manteiga</span>
+        </figure>
+        <figure>
+          <img class="foto" src="https://images.unsplash.com/photo-1567752588693-ad10a647c5a3?fm=jpg&q=70&auto=format&fit=crop&w=520" alt="pães artesanais recém-assados" loading="lazy">
+          <span>Pães do dia<br>na cesta</span>
+        </figure>
+      </div>
+
+      <div class="prateleira">
+        <figure>
+          <img class="foto" src="https://images.unsplash.com/photo-1583338917451-face2751d8d5?fm=jpg&q=70&auto=format&fit=crop&w=520" alt="tortas de frutas na vitrine" loading="lazy">
+          <span>Tortas<br>da confeitaria</span>
+        </figure>
+        <figure>
+          <img class="foto" src="https://images.unsplash.com/photo-1643944471768-2d2eac3afb6d?fm=jpg&q=70&auto=format&fit=crop&w=520" alt="balcão refrigerado com doces" loading="lazy">
+          <span>Doces<br>do balcão</span>
+        </figure>
+        <figure>
+          <img class="foto" src="https://images.unsplash.com/photo-1644015272264-2d70518c2046?fm=jpg&q=70&auto=format&fit=crop&w=520" alt="prateleira com variedade de pães" loading="lazy">
+          <span>Vitrine<br>de pães</span>
+        </figure>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ buffets ============ -->
+<div class="buffets" id="buffets">
+  <div class="env">
+    <article>
+      <h3>Café da manhã</h3>
+      <p>Sábado, domingo e feriados<br>das 7h às 12h</p>
+    </article>
+    <article>
+      <h3>Almoço</h3>
+      <p>Segunda a sexta<br>das 11h30 às 15h</p>
+    </article>
+    <article>
+      <h3>Chá da tarde</h3>
+      <p>Quarta a domingo<br>das 15h às 18h</p>
+    </article>
+    <article>
+      <h3>Sopas</h3>
+      <p class="pausado">Volta em maio<br>com seis opções por noite</p>
+    </article>
+  </div>
+</div>
+
+<!-- ============ destaques ============ -->
+<section id="encomendas">
+  <div class="env">
+    <div class="cabecalho-secao">
+      <h2>O que a Além Mar resolve pra você</h2>
+      <p>Da festa da firma ao lanche do fim da tarde. Escolha por onde começar.</p>
+    </div>
+
+    <div class="destaques">
+      <article>
+        <div class="capa" aria-hidden="true">
+          <img src="https://images.unsplash.com/photo-1621303837174-89787a7d4729?fm=jpg&q=70&auto=format&fit=crop&w=900" alt="" loading="lazy" onerror="this.remove()">
+          <svg width="88" height="66" viewBox="0 0 100 76" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <path d="M14 30h72v34a6 6 0 0 1-6 6H20a6 6 0 0 1-6-6Z"/>
+            <path d="M14 30 26 10h48l12 20"/>
+            <path d="M50 10v20M32 44h36"/>
+          </svg>
+        </div>
+        <div class="corpo">
+          <h3>Encomendas</h3>
+          <p>Sanduíche de metro, tábua de frios, salgadinhos, bolo de festa e cesta de café da manhã. Peça com 48 horas de antecedência e retire no balcão ou receba em casa.</p>
+          <a class="link" href="#">Montar o pedido</a>
+        </div>
+      </article>
+
+      <article>
+        <div class="capa b" aria-hidden="true">
+          <img src="https://images.unsplash.com/photo-1705972018470-a89eda1c6ce4?fm=jpg&q=70&auto=format&fit=crop&w=900" alt="" loading="lazy" onerror="this.remove()">
+          <svg width="88" height="66" viewBox="0 0 100 76" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <path d="M24 8h52v60H24z"/>
+            <path d="M36 24h28M36 36h28M36 48h18"/>
+            <path d="M24 8c-4 0-6 3-6 6v48c0 3 2 6 6 6"/>
+          </svg>
+        </div>
+        <div class="corpo">
+          <h3>Cardápio da casa</h3>
+          <p>Mais de duzentos itens entre padaria, lanchonete, rotisseria e confeitaria. Prato feito, porção, sanduíche na chapa e a vitrine de doces que muda toda semana.</p>
+          <a class="link" href="#cardapio">Ver o cardápio</a>
+        </div>
+      </article>
+
+      <article>
+        <div class="capa c" aria-hidden="true">
+          <img src="https://images.unsplash.com/photo-1546237769-6f84ec1a512a?fm=jpg&q=70&auto=format&fit=crop&w=900" alt="" loading="lazy" onerror="this.remove()">
+          <svg width="88" height="66" viewBox="0 0 100 76" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <path d="M18 32h56c0 16-12 26-28 26S18 48 18 32Z"/>
+            <path d="M74 36h8a6 6 0 0 1 0 12h-6"/>
+            <path d="M12 66h68"/>
+            <path d="M38 20c0-5 5-5 5-10M54 20c0-5 5-5 5-10"/>
+          </svg>
+        </div>
+        <div class="corpo">
+          <h3>Empório e adega</h3>
+          <p>Queijo de Alagoa, azeite português, geleia da serra, vinho para levar e o pão de ontem pela metade do preço. Tudo o que sobra da vitrine tem destino.</p>
+          <a class="link" href="#">Conhecer o empório</a>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ saída do forno (assinatura) ============ -->
+<section class="forno" id="forno">
+  <div class="env">
+    <div class="cabecalho-secao">
+      <h2>Saída do forno</h2>
+      <p>São sete fornadas por dia. Se você quiser o pão ainda quente, esta é a hora de aparecer.</p>
+    </div>
+
+    <div class="relogio">
+      <div>
+        <span class="hora">05h30</span>
+        <span class="item">Pão francês</span>
+        <span class="nota">A primeira e a maior fornada do dia</span>
+      </div>
+      <div>
+        <span class="hora">07h00</span>
+        <span class="item">Croissant e folhado</span>
+        <span class="nota">Massa laminada na véspera</span>
+      </div>
+      <div>
+        <span class="hora">09h30</span>
+        <span class="item">Pão de queijo</span>
+        <span class="nota">De meia em meia hora até o meio-dia</span>
+      </div>
+      <div>
+        <span class="hora">12h00</span>
+        <span class="item">Pão de forma</span>
+        <span class="nota">Fermentação natural, sem conservante</span>
+      </div>
+      <div>
+        <span class="hora">16h00</span>
+        <span class="item">Bolos e sonhos</span>
+        <span class="nota">Recheados na hora, no balcão</span>
+      </div>
+      <div>
+        <span class="hora">19h00</span>
+        <span class="item">Pão francês</span>
+        <span class="nota">Para quem passa voltando do trabalho</span>
+      </div>
+    </div>
+
+    <p class="rodape-nota">A última fornada sai às 19h. Depois dela o balcão continua servindo até as 22h, com o que ainda estiver quente na vitrine.</p>
+  </div>
+</section>
+
+<!-- ============ cardápio ============ -->
+<section id="cardapio">
+  <div class="env">
+    <div class="cabecalho-secao">
+      <h2>Um pedaço do cardápio</h2>
+      <p>O cardápio completo fica no balcão e no aplicativo. Aqui vão os campeões de pedido.</p>
+    </div>
+
+    <div class="cardapio-grade">
+      <div>
+        <div class="grupo">
+          <div class="capa-grupo">
+            <img src="https://images.unsplash.com/photo-1568471173242-461f0a730452?fm=jpg&amp;q=70&amp;auto=format&amp;fit=crop&amp;w=760" alt="pães franceses recém-assados" loading="lazy" onerror="this.parentNode.remove()">
+          </div>
+          <h3>Padaria</h3>
+          <div class="prato"><span class="nome">Pão francês <small>por quilo, saído do forno</small></span><span class="pontos"></span><span class="preco">R$ 18,90</span></div>
+          <div class="prato"><span class="nome">Pão na chapa com manteiga</span><span class="pontos"></span><span class="preco">R$ 6,50</span></div>
+          <div class="prato"><span class="nome">Pão de queijo <small>unidade, mineiro</small></span><span class="pontos"></span><span class="preco">R$ 5,00</span></div>
+          <div class="prato"><span class="nome">Pão de fermentação natural <small>500 g</small></span><span class="pontos"></span><span class="preco">R$ 24,00</span></div>
+        </div>
+
+        <div class="grupo">
+          <div class="capa-grupo">
+            <img src="https://images.unsplash.com/photo-1589402932101-9672b5778f20?fm=jpg&amp;q=70&amp;auto=format&amp;fit=crop&amp;w=760" alt="xícara de café passado" loading="lazy" onerror="this.parentNode.remove()">
+          </div>
+          <h3>Balcão do café</h3>
+          <div class="prato"><span class="nome">Café coado <small>xícara pequena</small></span><span class="pontos"></span><span class="preco">R$ 4,50</span></div>
+          <div class="prato"><span class="nome">Pingado no copo americano</span><span class="pontos"></span><span class="preco">R$ 6,00</span></div>
+          <div class="prato"><span class="nome">Média com leite vaporizado</span><span class="pontos"></span><span class="preco">R$ 9,50</span></div>
+          <div class="prato"><span class="nome">Chocolate quente da casa</span><span class="pontos"></span><span class="preco">R$ 13,00</span></div>
+        </div>
+      </div>
+
+      <div>
+        <div class="grupo">
+          <div class="capa-grupo">
+            <img src="https://images.unsplash.com/photo-1689020353604-8041221e1273?fm=jpg&amp;q=70&amp;auto=format&amp;fit=crop&amp;w=760" alt="pão na chapa com manteiga" loading="lazy" onerror="this.parentNode.remove()">
+          </div>
+          <h3>Lanchonete</h3>
+          <div class="prato"><span class="nome">Misto quente na chapa</span><span class="pontos"></span><span class="preco">R$ 16,00</span></div>
+          <div class="prato"><span class="nome">Bauru da casa <small>rosbife, queijo, tomate e pepino</small></span><span class="pontos"></span><span class="preco">R$ 34,00</span></div>
+          <div class="prato"><span class="nome">Coxinha de frango com catupiry</span><span class="pontos"></span><span class="preco">R$ 12,50</span></div>
+          <div class="prato"><span class="nome">Prato feito do dia <small>segunda a sexta, das 11h30</small></span><span class="pontos"></span><span class="preco">R$ 39,00</span></div>
+        </div>
+
+        <div class="grupo">
+          <div class="capa-grupo">
+            <img src="https://images.unsplash.com/photo-1691520240461-50782f283fea?fm=jpg&amp;q=70&amp;auto=format&amp;fit=crop&amp;w=760" alt="fatia de bolo com café" loading="lazy" onerror="this.parentNode.remove()">
+          </div>
+          <h3>Confeitaria</h3>
+          <div class="prato"><span class="nome">Sonho de creme</span><span class="pontos"></span><span class="preco">R$ 11,00</span></div>
+          <div class="prato"><span class="nome">Fatia de bolo de fubá com goiabada</span><span class="pontos"></span><span class="preco">R$ 12,00</span></div>
+          <div class="prato"><span class="nome">Pastel de nata</span><span class="pontos"></span><span class="preco">R$ 9,00</span></div>
+          <div class="prato"><span class="nome">Torta de limão <small>fatia</small></span><span class="pontos"></span><span class="preco">R$ 18,00</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ sobre ============ -->
+<section class="sobre" id="sobre">
+  <div class="env">
+    <div class="sobre-foto">
+      <img src="https://images.unsplash.com/photo-1511018556340-d16986a1c194?fm=jpg&q=70&auto=format&fit=crop&w=1400" alt="Salão da padaria visto do balcão" loading="lazy" onerror="this.parentNode.remove()">
+    </div>
+    <div>
+      <h2>Aqui tem qualidade, e isso não é força de expressão</h2>
+      <p>Está escrito no nosso selo porque é o combinado com quem entra: pão feito no dia, café passado na hora e vitrine que não guarda o que não presta.</p>
+      <p>O turno começa de madrugada, para que às 5h30 a porta abra com tudo pronto. Quem chega cedo pega a primeira fornada ainda quente.</p>
+    </div>
+    <div class="numeros">
+      <div><strong>5h30</strong><span>Hora em que a porta abre, todo dia</span></div>
+      <div><strong>365</strong><span>Dias por ano de porta aberta</span></div>
+      <div><strong>7</strong><span>Fornadas por dia, todos os dias</span></div>
+      <div><strong>212</strong><span>Itens no cardápio da casa</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ contato ============ -->
+<section class="contato" id="contato">
+  <div class="env">
+    <div>
+      <div class="cabecalho-secao" style="margin-bottom:32px">
+        <h2>Onde estamos</h2>
+        <p>Na Avenida Senador Pinheiro Machado, com entrada pela lateral para quem vem de carro.</p>
+      </div>
+      <dl class="dados">
+        <dt>Endereço</dt>
+        <dd>Av. Sen. Pinheiro Machado, 622, Santos</dd>
+        <dt>Telefone e WhatsApp</dt>
+        <dd>
+          <a href="tel:+551332373632">(13) 3237-3632</a><br>
+          <a href="https://wa.me/551332373632" target="_blank" rel="noopener" class="secundario">Chamar no WhatsApp</a>
+        </dd>
+        <dt>E-mail</dt>
+        <dd><a href="mailto:contato@alemmar.com.br">contato@alemmar.com.br</a></dd>
+        <dt>Funcionamento</dt>
+        <dd>Todos os dias, das 5h30 às 22h</dd>
+      </dl>
+    </div>
+
+    <div class="mapa">
+      <div class="desenho">
+        <iframe
+          src="https://www.google.com/maps?q=Av.%20Sen.%20Pinheiro%20Machado%2C%20622%2C%20Santos%2C%20SP&amp;z=17&amp;hl=pt-BR&amp;output=embed"
+          title="Mapa com a localização da Padaria Além Mar"
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"
+          allowfullscreen></iframe>
+      </div>
+      <div class="rodape">
+        <a href="https://www.google.com/maps/search/?api=1&amp;query=Av.%20Sen.%20Pinheiro%20Machado%2C%20622%2C%20Santos%2C%20SP" target="_blank" rel="noopener">Abrir no Google Maps</a>
+        <a href="https://www.waze.com/ul?q=Av.%20Sen.%20Pinheiro%20Machado%2C%20622%2C%20Santos%2C%20SP&amp;navigate=yes" target="_blank" rel="noopener">Abrir no Waze</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ rodapé ============ -->
+<footer>
+  <div class="env">
+    <div class="rodape-grade">
+      <div class="assinatura">
+        <span class="nome">Além Mar</span>
+        <p>Padaria, confeitaria e empório em Santos. Aqui tem qualidade.</p>
+      </div>
+
+      <div>
+        <h4>A casa</h4>
+        <ul>
+          <li><a href="#cardapio">Cardápio</a></li>
+          <li><a href="#buffets">Buffets</a></li>
+          <li><a href="#forno">Saída do forno</a></li>
+          <li><a href="#sobre">Nossa história</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4>Serviços</h4>
+        <ul>
+          <li><a href="#encomendas">Encomendas</a></li>
+          <li><a href="#">Café corporativo</a></li>
+          <li><a href="#">Empório e adega</a></li>
+          <li><a href="#contato">Fale com a gente</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4>Fornada da semana no e-mail</h4>
+        <p style="font-size:.92rem;color:#8B9BA6;margin:0">Toda quinta mandamos o cardápio de sopas e as novidades da confeitaria.</p>
+        <form class="news" id="form-news">
+          <label for="email-news" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Seu e-mail</label>
+          <input id="email-news" type="email" required placeholder="seu@email.com.br">
+          <button class="botao cheio" type="submit">Assinar</button>
+        </form>
+        <p class="news-ok" id="news-ok" hidden>Pronto, você está na lista.</p>
+      </div>
+    </div>
+
+    <div class="creditos">
+      <span>© 2026 Padaria Além Mar. Conteúdo fictício, criado para demonstração de layout.</span>
+      <span>Av. Sen. Pinheiro Machado, 622, Santos</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // menu mobile
+  const botaoMenu = document.querySelector('.abrir-menu');
+  const menu = document.getElementById('menu-principal');
+  botaoMenu.addEventListener('click', () => {
+    const aberto = menu.classList.toggle('aberto');
+    botaoMenu.setAttribute('aria-expanded', String(aberto));
+    botaoMenu.textContent = aberto ? 'Fechar' : 'Menu';
+  });
+  menu.addEventListener('click', e => {
+    if (e.target.tagName === 'A' && menu.classList.contains('aberto')) {
+      menu.classList.remove('aberto');
+      botaoMenu.setAttribute('aria-expanded', 'false');
+      botaoMenu.textContent = 'Menu';
+    }
+  });
+
+  // newsletter
+  const form = document.getElementById('form-news');
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+    document.getElementById('news-ok').hidden = false;
+    form.reset();
+  });
+
+  // relógio da vitrine, ciente do horário de funcionamento (5h30 às 22h)
+  const cabecaVitrine = document.querySelector('.vitrine .cabeca');
+  const rotuloVitrine = cabecaVitrine.querySelector('span:first-child');
+  const relogioVitrine = cabecaVitrine.querySelector('span:last-child');
+  const acertaHora = () => {
+    const agora = new Date();
+    const minutos = agora.getHours() * 60 + agora.getMinutes();
+    const aberto = minutos >= 330 && minutos < 1320;
+    rotuloVitrine.textContent = aberto ? 'Na vitrine agora' : 'Abrimos às 5h30';
+    relogioVitrine.textContent = aberto
+      ? String(agora.getHours()).padStart(2, '0') + 'h' + String(agora.getMinutes()).padStart(2, '0')
+      : 'Fechado';
+  };
+  acertaHora();
+  setInterval(acertaHora, 30000);
+</script>
+</body>
+</html>
